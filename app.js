@@ -1,8 +1,8 @@
 const apiUrls = {
-  4: "https://nedirara.com/api/v2/json/4harf",
-  5: "https://nedirara.com/api/v2/json/5harf",
-  6: "https://nedirara.com/api/v2/json/6harf",
-  7: "https://nedirara.com/api/v2/json/7harf",
+  4: "json/4harf.json",
+  5: "json/5harf.json",
+  6: "json/6harf.json",
+  7: "json/7harf.json",
 };
 
 let targetWord = "";
@@ -10,21 +10,62 @@ let attemptsLeft = 5;
 let wordLength = 0;
 let currentAttempt = 0;
 
+function trimCaret(str)
+{
+	const map=
+	{
+		"Â":"A",
+		"â":"a",
+		"Ĉ":"C",
+		"ĉ":"c",
+		"Ê":"E",
+		"ê":"e",
+		"Ĝ":"G",
+		"ĝ":"g",
+		"Ĥ":"H",
+		"ĥ":"h",
+		"Î":"İ",
+		"î":"i",
+		"Ĵ":"J",
+		"ĵ":"j",
+		"Ô":"O",
+		"ô":"o",
+		"Ŝ":"S",
+		"ŝ":"s",
+		"Û":"U",
+		"û":"u",
+		"Ŷ":"Y",
+		"ŷ":"y",
+		"Ẑ":"Z",
+		"ẑ":"z"
+	}
+	for (const m in map) {
+    		str = str.replace(new RegExp(m, 'g'), map[m]);
+  	}
+	return str;
+}
+
 async function startGame(length) {
   wordLength = length;
   attemptsLeft = 5;
   currentAttempt = 0;
 
   // Kelimeyi API'den al
-  const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrls[length])}`);
-  const data = await response.json();
-  const wordList = JSON.parse(data.contents);
-  targetWord = wordList[Math.floor(Math.random() * wordList.length)].kelime.toLocaleLowerCase("tr-TR");
+  const response = await fetch(apiUrls[length]);
+  const wordList = await response.json();
+  targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("game").style.display = "block";
 
   setupGame();
+}
+function toggleHint()
+{
+	if(event.target.innerHTML=="?")
+		event.target.innerHTML = targetWord;
+	else
+		event.target.innerHTML = "?";
 }
 
 function setupGame() {
