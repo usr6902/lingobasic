@@ -166,13 +166,13 @@ function showModal(message) {
   });
 }
 
-async function getWordDescription(){
+async function getWordDescription() {
   try {
-   return  (await (await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURI(targetWord)}`)).json())[0].anlamlarListe.map(x=>x.anlam_html.replace("\n","<br/>")).join();
+    return (await (await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURI(targetWord)}`)).json())[0].anlamlarListe.map(x => x.anlam_html.replace("\n", "<br/>")).join();
   } catch (error) {
     return "<strong>Kelime bilgisi çekilemedi!</strong>"
   }
-  
+
 }
 
 function submitGuess() {
@@ -190,7 +190,9 @@ function submitGuess() {
 
   if (wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
-    showModal(`<p>Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${getWordDescription()}`);
+    getWordDescription().then(x => {
+      showModal(`<p>Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${x}`);
+    });
     return;
   }
 
@@ -229,16 +231,20 @@ function submitGuess() {
   currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
 
   if (guess === targetWord) {
-    showModal("<p>Tebrikler! Doğru kelimeyi buldunuz.</p><br/>"+getWordDescription());
+    getWordDescription().then(x => {
+      showModal("<p>Tebrikler! Doğru kelimeyi buldunuz.</p><br/>" + x);
+    });
     return;
   }
 
   attemptsLeft--;
 
   if (attemptsLeft === 0) {
-    showModal(`<p>Maalesef bilemediniz! Doğru kelime: ${targetWord}</p><br/>${getWordDescription()}`);
+    getWordDescription().then(x => {
+      showModal(`<p>Maalesef bilemediniz! Doğru kelime: ${targetWord}</p><br/>${x}`);
+    });
     return;
-  } 
+  }
 
   currentAttempt++;
   const nextRow = rows[currentAttempt];
