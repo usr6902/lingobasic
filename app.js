@@ -1,8 +1,12 @@
 const apiUrls = {
-  4: "json/4harf.json",
-  5: "json/5harf.json",
-  6: "json/6harf.json",
-  7: "json/7harf.json",
+  "4": "json/4harf.json",
+  "5": "json/5harf.json",
+  "6": "json/6harf.json",
+  "7": "json/7harf.json",
+  "4tdk": "json/4tdk.json",
+  "5tdk": "json/5tdk.json",
+  "6tdk": "json/6tdk.json",
+  "7tdk": "json/7tdk.json"
 };
 
 let targetWord = "";
