@@ -8,7 +8,7 @@ const apiUrls = {
   "6tdk": "json/6tdk.json",
   "7tdk": "json/7tdk.json"
 };
-
+let wordList = [];
 let targetWord = "";
 let attemptsLeft = 5;
 let wordLength = 0;
@@ -56,7 +56,7 @@ async function startGame(length) {
 
   // Kelimeyi API'den al
   const response = await fetch(apiUrls[length]);
-  const wordList = await response.json();
+  wordList = await response.json();
 do {
     targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
 } while (targetWord.includes(" "))
@@ -170,6 +170,16 @@ function submitGuess() {
     return;
   }
 
+  if(wordList.filter(x=>trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0)
+  {
+	currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
+     setTimeout(() => {
+	     	alert(`Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}`);
+		location.reload();
+	}, 100);
+    return;
+  }
+	
   const feedback = [];
   const usedIndexes = new Set();
   const targetLetterCount = {}; // Count occurrences of each letter in the target word
@@ -236,64 +246,5 @@ function submitGuess() {
     }
   });
   focusNextInput();
-}
-function submitGuessOld() {
-  const rows = document.querySelectorAll(".attempt-row");
-  const currentRow = rows[currentAttempt];
-  const inputs = currentRow.querySelectorAll(".letter-input");
-
-  let guess = "";
-  inputs.forEach(input => guess += input.value.toLocaleLowerCase("tr-TR"));
-
-  if (guess.length !== wordLength) {
-    alert("Lütfen tüm harfleri doldurun!");
-    return;
-  }
-
-  const feedback = [];
-  const usedIndexes = new Set();
-
-  for (let i = 0; i < wordLength; i++) {
-    const input = inputs[i];
-    const letter = guess[i];
-    if (letter === targetWord[i]) {
-      input.classList.add("correct");
-      usedIndexes.add(i);
-    } else if (targetWord.includes(letter)) {
-      input.classList.add("partial");
-    } else {
-      input.classList.add("wrong");
-    }
-  }
-
-  currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
-
-  if (guess === targetWord) {
-    alert("Tebrikler! Doğru kelimeyi buldunuz.");
-    location.reload();
-    return;
-  }
-
-  attemptsLeft--;
-
-  if (attemptsLeft === 0) {
-    alert(`Oyun bitti! Doğru kelime: ${targetWord}`);
-    location.reload();
-    return;
-  }
-
-  currentAttempt++;
-  const nextRow = rows[currentAttempt];
-  nextRow.querySelectorAll("input").forEach((input,i) => {
-	  if (i === 0) {
-        input.value = targetWord[0];
-		input.classList.add("correct");
-        input.readOnly = true;
-      }
-	  else
-		input.readOnly = false
-	  
-	});
-  focusNextInput();  // Bir sonraki input'a odaklanma
 }
 
