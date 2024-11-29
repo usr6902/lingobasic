@@ -109,8 +109,81 @@ function focusInput(order) {
 input.focus(); 
 }
 
-
 function submitGuess() {
+  const rows = document.querySelectorAll(".attempt-row");
+  const currentRow = rows[currentAttempt];
+  const inputs = currentRow.querySelectorAll(".letter-input");
+
+  let guess = "";
+  inputs.forEach(input => guess += input.value.toLocaleLowerCase("tr-TR"));
+
+  if (guess.length !== wordLength) {
+    alert("Lütfen tüm harfleri doldurun!");
+    return;
+  }
+
+  const feedback = [];
+  const usedIndexes = new Set();
+  const targetLetterCount = {}; // Count occurrences of each letter in the target word
+
+  // Count occurrences of each letter in targetWord
+  for (let i = 0; i < targetWord.length; i++) {
+    targetLetterCount[targetWord[i]] = (targetLetterCount[targetWord[i]] || 0) + 1;
+  }
+
+  // First pass: Check for green matches
+  for (let i = 0; i < wordLength; i++) {
+    const input = inputs[i];
+    const letter = guess[i];
+    if (letter === targetWord[i]) {
+      input.classList.add("correct");
+      usedIndexes.add(i);
+      targetLetterCount[letter]--; // Reduce the count of that letter
+    }
+  }
+
+  // Second pass: Check for yellow matches (with validation to ensure only one yellow per letter)
+  for (let i = 0; i < wordLength; i++) {
+    const input = inputs[i];
+    const letter = guess[i];
+    if (letter !== targetWord[i] && targetWord.includes(letter) && !usedIndexes.has(i) && targetLetterCount[letter] > 0) {
+      input.classList.add("partial");
+      targetLetterCount[letter]--; // Reduce count to prevent reusing this letter
+    } else if (letter !== targetWord[i]) {
+      input.classList.add("wrong");
+    }
+  }
+
+  currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
+
+  if (guess === targetWord) {
+    alert("Tebrikler! Doğru kelimeyi buldunuz.");
+    location.reload();
+    return;
+  }
+
+  attemptsLeft--;
+
+  if (attemptsLeft === 0) {
+    alert(`Oyun bitti! Doğru kelime: ${targetWord}`);
+    location.reload();
+    return;
+  }
+
+  currentAttempt++;
+  const nextRow = rows[currentAttempt];
+  nextRow.querySelectorAll("input").forEach((input, i) => {
+    if (i === 0) {
+      input.value = targetWord[0];
+      input.classList.add("correct");
+      input.readOnly = true;
+    } else {
+      input.readOnly = false;
+    }
+  });
+  focusNextInput();
+}
+function submitGuessOld() {
   const rows = document.querySelectorAll(".attempt-row");
   const currentRow = rows[currentAttempt];
   const inputs = currentRow.querySelectorAll(".letter-input");
