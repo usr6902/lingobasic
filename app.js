@@ -168,11 +168,46 @@ function showModal(message) {
 
 async function getWordDescription() {
   try {
-    return (await (await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURI(targetWord)}`)).json())[0].anlamlarListe.map(x => x.anlam_html.replace("\n", "<br/>")).join();
-  } catch (error) {
-    return "<strong>Kelime bilgisi çekilemedi!</strong>"
-  }
+    // API'den veriyi al
+    const response = await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURI(targetWord)}`);
+    const data = await response.json();
+    const wordData = data[0]; // İlk sonuç üzerinde çalışıyoruz.
 
+    // Kelimenin kendisi
+    const wordTitle = `<h2>${wordData.madde || "Kelime bulunamadı"}</h2>`;
+
+    // Anlamlar listesini işleme
+    const meaningsList = wordData.anlamlarListe.map((anlam) => {
+      // Anlamı varsa kullan, yoksa alternatif bir açıklama yaz
+      const meaningText = anlam.anlam || "Anlam bulunamadı.";
+      const examplesList = anlam.orneklerListe
+        ? `
+        <h4>Örnekler</h4>
+        <ul>
+          ${anlam.orneklerListe.map((example) => `<li>${example.ornek}</li>`).join("")}
+        </ul>
+        `
+        : ""; // Eğer örnekler yoksa boş bırak
+
+      return `
+      <li>
+        ${meaningText}
+        ${examplesList}
+      </li>
+      `;
+    });
+
+    // Anlamları ve örnekleri birleştir
+    return `
+    ${wordTitle}
+    <ul>
+      ${meaningsList.join("")}
+    </ul>
+    `;
+  } catch (error) {
+    // Hata durumunda alternatif mesaj
+    return "<strong>Kelime bilgisi çekilemedi!</strong>";
+  }
 }
 
 function submitGuess() {
