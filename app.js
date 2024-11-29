@@ -50,14 +50,17 @@ function trimCaret(str)
 }
 
 async function startGame(length) {
-  wordLength = length;
+  
   attemptsLeft = 5;
   currentAttempt = 0;
 
   // Kelimeyi API'den al
   const response = await fetch(apiUrls[length]);
   const wordList = await response.json();
-  targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
+do {
+    targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
+} while (targetWord.includes(" "))
+  wordLength = targetWord.length;
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("game").style.display = "block";
