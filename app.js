@@ -198,16 +198,22 @@ function submitGuess() {
   currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
 
   if (guess === targetWord) {
-    alert("Tebrikler! Doğru kelimeyi buldunuz.");
-    location.reload();
+    setTimeout(() => {
+	    alert("Tebrikler! Doğru kelimeyi buldunuz.");
+    	    location.reload();
+    }, 100);
     return;
   }
 
   attemptsLeft--;
 
   if (attemptsLeft === 0) {
-    alert(`Oyun bitti! Doğru kelime: ${targetWord}`);
-    location.reload();
+	  
+  currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
+     setTimeout(() => {
+	     	alert(`Maalesef bilemediniz! Doğru kelime: ${targetWord}`);
+		location.reload();
+	}, 100);
     return;
   }
 
