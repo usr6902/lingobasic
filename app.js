@@ -14,52 +14,51 @@ let attemptsLeft = 5;
 let wordLength = 0;
 let currentAttempt = 0;
 
-function trimCaret(str)
-{
-	const map=
-	{
-		"Â":"A",
-		"â":"a",
-		"Ĉ":"C",
-		"ĉ":"c",
-		"Ê":"E",
-		"ê":"e",
-		"Ĝ":"G",
-		"ĝ":"g",
-		"Ĥ":"H",
-		"ĥ":"h",
-		"Î":"İ",
-		"î":"i",
-		"Ĵ":"J",
-		"ĵ":"j",
-		"Ô":"O",
-		"ô":"o",
-		"Ŝ":"S",
-		"ŝ":"s",
-		"Û":"U",
-		"û":"u",
-		"Ŷ":"Y",
-		"ŷ":"y",
-		"Ẑ":"Z",
-		"ẑ":"z"
-	}
-	for (const m in map) {
-    		str = str.replace(new RegExp(m, 'g'), map[m]);
-  	}
-	return str;
+function trimCaret(str) {
+  const map =
+  {
+    "Â": "A",
+    "â": "a",
+    "Ĉ": "C",
+    "ĉ": "c",
+    "Ê": "E",
+    "ê": "e",
+    "Ĝ": "G",
+    "ĝ": "g",
+    "Ĥ": "H",
+    "ĥ": "h",
+    "Î": "İ",
+    "î": "i",
+    "Ĵ": "J",
+    "ĵ": "j",
+    "Ô": "O",
+    "ô": "o",
+    "Ŝ": "S",
+    "ŝ": "s",
+    "Û": "U",
+    "û": "u",
+    "Ŷ": "Y",
+    "ŷ": "y",
+    "Ẑ": "Z",
+    "ẑ": "z"
+  }
+  for (const m in map) {
+    str = str.replace(new RegExp(m, 'g'), map[m]);
+  }
+  return str;
 }
 
 async function startGame(length) {
-  
+
   attemptsLeft = 5;
   currentAttempt = 0;
 
   // Kelimeyi API'den al
   const response = await fetch(apiUrls[length]);
   wordList = await response.json();
-do {
+  do {
     targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
-} while (targetWord.includes(" "))
+  } while (targetWord.includes(" "))
   wordLength = targetWord.length;
 
   document.getElementById("stage-selection").style.display = "none";
@@ -67,12 +66,11 @@ do {
 
   setupGame();
 }
-function toggleHint()
-{
-	if(event.target.innerHTML=="?")
-		event.target.innerHTML = targetWord;
-	else
-		event.target.innerHTML = "?";
+function toggleHint() {
+  if (event.target.innerHTML == "?")
+    event.target.innerHTML = targetWord;
+  else
+    event.target.innerHTML = "?";
 }
 
 function setupGame() {
@@ -89,29 +87,27 @@ function setupGame() {
       input.type = "text";
       input.maxLength = 1;
       input.classList.add("letter-input");
-      input.classList.add("letter-input-order-"+i);
-      input.attributes["order"]=i;
-	  input.addEventListener("input", function(event) {
-		if (event.target.value) {  // Eğer kullanıcı bir harf girdiyse
-			focusNextInput();  // Bir sonraki input'a odaklan
-		}
-    });
-	
-	 input.addEventListener("keyup", function(event) {
-		if(event.keyCode === 8)
-		{
-			focusInput(event.target.attributes["order"]-1);
-		}
-		else if(event.keyCode === 13)
-		{
-			submitGuess();
-		}
-    });
+      input.classList.add("letter-input-order-" + i);
+      input.attributes["order"] = i;
+      input.addEventListener("input", function (event) {
+        if (event.target.value) {  // Eğer kullanıcı bir harf girdiyse
+          focusNextInput();  // Bir sonraki input'a odaklan
+        }
+      });
+
+      input.addEventListener("keyup", function (event) {
+        if (event.keyCode === 8) {
+          focusInput(event.target.attributes["order"] - 1);
+        }
+        else if (event.keyCode === 13) {
+          submitGuess();
+        }
+      });
 
       // İlk harf sabit, diğerleri kilitli
       if (attempt === 0 && i === 0) {
         input.value = firstLetter;
-		input.classList.add("correct");
+        input.classList.add("correct");
         input.readOnly = true;
       } else if (attempt !== 0) {
         input.readOnly = true;
@@ -126,15 +122,15 @@ function setupGame() {
 }
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Başlangıçta ilk inputa odaklanma
   focusNextInput();
 });
 
 function focusNextInput() {
   const activeRow = document.querySelectorAll(".attempt-row")[currentAttempt];  // Aktif satır
-  if(!activeRow)
-	  return;
+  if (!activeRow)
+    return;
   const inputs = activeRow.querySelectorAll(".letter-input");  // Satırdaki inputları al
 
   for (let i = 0; i < inputs.length; i++) {
@@ -148,13 +144,35 @@ function focusNextInput() {
 
 
 function focusInput(order) {
-	if(order<1)
-		return;
+  if (order < 1)
+    return;
   const activeRow = document.querySelectorAll(".attempt-row")[currentAttempt];  // Aktif satır
-  if(!activeRow)
-	  return;
-  const input = activeRow.querySelector(".letter-input-order-"+order);  
-input.focus(); 
+  if (!activeRow)
+    return;
+  const input = activeRow.querySelector(".letter-input-order-" + order);
+  input.focus();
+}
+
+function showModal(message) {
+  const modal = document.getElementById("success-modal");
+  const modalMessage = document.getElementById("modal-message");
+  modalMessage.innerHTML = message;
+  modal.style.display = "block";
+
+  // Yeni Oyun butonu işlevi
+  const newGameButton = document.getElementById("new-game-button");
+  newGameButton.addEventListener("click", function () {
+    location.reload(); // Sayfayı yeniden yükle
+  });
+}
+
+async function getWordDescription(){
+  try {
+   return  (await (await fetch(`https://sozluk.gov.tr/gts?ara=${encodeURI(targetWord)}`)).json())[0].anlamlarListe.map(x=>x.anlam_html.replace("\n","<br/>")).join();
+  } catch (error) {
+    return "<strong>Kelime bilgisi çekilemedi!</strong>"
+  }
+  
 }
 
 function submitGuess() {
@@ -170,16 +188,12 @@ function submitGuess() {
     return;
   }
 
-  if(wordList.filter(x=>trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0)
-  {
-	currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
-     setTimeout(() => {
-	     	alert(`Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}`);
-		location.reload();
-	}, 100);
+  if (wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
+    currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
+    showModal(`<p>Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${getWordDescription()}`);
     return;
   }
-	
+
   const feedback = [];
   const usedIndexes = new Set();
   const targetLetterCount = {}; // Count occurrences of each letter in the target word
@@ -215,24 +229,16 @@ function submitGuess() {
   currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
 
   if (guess === targetWord) {
-    setTimeout(() => {
-	    alert("Tebrikler! Doğru kelimeyi buldunuz.");
-    	    location.reload();
-    }, 100);
+    showModal("<p>Tebrikler! Doğru kelimeyi buldunuz.</p><br/>"+getWordDescription());
     return;
   }
 
   attemptsLeft--;
 
   if (attemptsLeft === 0) {
-	  
-  currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
-     setTimeout(() => {
-	     	alert(`Maalesef bilemediniz! Doğru kelime: ${targetWord}`);
-		location.reload();
-	}, 100);
+    showModal(`<p>Maalesef bilemediniz! Doğru kelime: ${targetWord}</p><br/>${getWordDescription()}`);
     return;
-  }
+  } 
 
   currentAttempt++;
   const nextRow = rows[currentAttempt];
