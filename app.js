@@ -19,7 +19,7 @@ async function startGame(length) {
   const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrls[length])}`);
   const data = await response.json();
   const wordList = JSON.parse(data.contents);
-  targetWord = wordList[Math.floor(Math.random() * wordList.length)].kelime.toLowerCase();
+  targetWord = wordList[Math.floor(Math.random() * wordList.length)].kelime.toLocaleLowerCase("tr-TR");
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("game").style.display = "block";
@@ -116,7 +116,7 @@ function submitGuess() {
   const inputs = currentRow.querySelectorAll(".letter-input");
 
   let guess = "";
-  inputs.forEach(input => guess += input.value.toLowerCase());
+  inputs.forEach(input => guess += input.value.toLocaleLowerCase("tr-TR"));
 
   if (guess.length !== wordLength) {
     alert("Lütfen tüm harfleri doldurun!");
