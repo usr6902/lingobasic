@@ -76,6 +76,7 @@ function showSettingsModal() {
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("settings").style.display = "block";
   document.getElementById("game").style.display = "none";
+  document.getElementById("header").style.display="flex";
 }
 
 function getConfigValues() {
@@ -389,6 +390,6 @@ function submitGuess() {
       input.classList.add("correct");
     }
   });
-  countDown = countDownConfig;
+  countDown = configuration.countDown;
   focusNextInput();
 }
