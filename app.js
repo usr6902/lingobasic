@@ -13,10 +13,18 @@ const apiUrls = {
   "6tdk": "json/6tdk.json",
   "7tdk": "json/7tdk.json"
 };
+
+
+let configuration={
+  countDown: 15,
+  attemptsLeft:5,
+  checkDictionary:true,
+  onlyFav: false
+}
+
 let wordList = [];
 let targetWord = "";
-let attemptsLeftConfig = 5;
-let attemptsLeft = attemptsLeftConfig;
+let attemptsLeft = configuration.attemptsLeft;
 let wordLength = 0;
 let currentAttempt = 0;
 let matchedWord = "";
@@ -55,24 +63,54 @@ function trimCaret(str) {
   return str;
 }
 
-let countDownConfig = 10;
-let countDown = countDownConfig;
+let countDown = configuration.countDown;
 let countDownInterval = null;
 
-function setConfigValues() {
-  const cfg = "Tahmin süresi (sn), Hak sayısı şeklinde aralarında virgül olacak şekilde ve bu sırayla değerleri giriniz.\nMevcut değerler: " + countDownConfig + "," + attemptsLeftConfig;
-  const ncfg = prompt(cfg);
-  const ncfga = ncfg.split(",");
-  if (ncfga.length != 2) {
-    alert("Uyumsuz veri girdiğinizden güncelleme yapılamadı");
-    return;
+function showSettingsModal() {
+  const cfg = getConfigValues();
+  document.getElementById("countDownInput").value = cfg.countDown;
+  document.getElementById("attemptInput").value = cfg.attemptsLeft;
+  document.getElementById("dictionaryCheckInput").value = cfg.checkDictionary;
+  document.getElementById("onlyFavInput").value = cfg.onlyFav;
+
+  document.getElementById("stage-selection").style.display = "none";
+  document.getElementById("settings").style.display = "block";
+  document.getElementById("game").style.display = "none";
+}
+
+function getConfigValues() {
+  const cfg = localStorage.getItem("configValues");
+  return {
+    attemptsLeft: cfg?.attemptsLeft ?? 5,
+    countDown: cfg?.countDown ?? 15,
+    onlyFav: cfg ? !!cfg.onlyFav : false,
+    checkDictionary: cfg ? !!cfg.checkDictionary : true,
   }
-  countDownConfig = +ncfga[0];
-  attemptsLeftConfig = +ncfga[1];
-  localStorage.setItem("configValues", JSON.stringify({ countDown: countDownConfig, attemptsLeft: attemptsLeftConfig }))
-  alert("Güncelleme yapıldı. \nTahmin süresi " + countDownConfig + " saniye. \nHak sayısı " + attemptsLeftConfig + " olarak ayarlandı");
+}
+
+function saveSettings(){
+  setConfigValues();
+  
+  document.getElementById("stage-selection").style.display = "block";
+  document.getElementById("settings").style.display = "none";
+  document.getElementById("game").style.display = "none";
+  document.getElementById("header").style.display="flex";
+}
+function setConfigValues() {
+  const cfg = {
+    countDown: document.getElementById("countDownInput").value,
+    attemptsLeft: document.getElementById("attemptInput").value,
+    checkDictionary: document.getElementById("dictionaryCheckInput").value,
+    onlyFav: document.getElementById("onlyFavInput").value
+  }
+  configuration = cfg;
+  localStorage.setItem("configValues", JSON.stringify(cfg));
+  alert("Güncelleme yapıldı.");
 }
 async function startGame(length) {
+  configuration = getConfigValues();
+  attemptsLeft = configuration.attemptsLeft;
+  countDown = configuration.countDown;
 
   userInput = document.getElementById("user-input");
   userInput.addEventListener("keyup", function (event) {
@@ -80,7 +118,6 @@ async function startGame(length) {
       submitGuess();
     }
   });
-  attemptsLeft = attemptsLeftConfig;
   currentAttempt = 0;
   // Kelimeyi API'den al
   const response = await fetch(apiUrls[length]);
@@ -93,7 +130,9 @@ async function startGame(length) {
   matchedWord = new Array(wordLength + 1).join(".");
 
   document.getElementById("stage-selection").style.display = "none";
+  document.getElementById("settings").style.display = "none";
   document.getElementById("game").style.display = "block";
+  document.getElementById("header").style.display="none";
 
   setupGame();
 }
@@ -280,7 +319,7 @@ function submitGuess() {
 
   inputs.forEach((input, i) => input.value = guess[i]);
 
-  if (wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
+  if (configuration.checkDictionary && wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
     clearInterval(countDownInterval);
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
     getWordDescription().then(x => {
@@ -353,12 +392,3 @@ function submitGuess() {
   countDown = countDownConfig;
   focusNextInput();
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const cfg = localStorage.getItem("configValues");
-  if (cfg) {
-    const pcfg = JSON.parse(cfg);
-    attemptsLeft = attemptsLeftConfig = pcfg.attemptsLeft;
-    countDown = countDownConfig = pcfg.countDown;
-  }
-});

@@ -152,3 +152,19 @@ button.bolum {
   font-weight: bold;
   background-color: orange;
 }
+
+div#settings {
+    padding: 1%;
+    color: white;
+}
+#settings>.row {
+    display: flex;
+    justify-content: space-between;
+    align-content: space-around;
+    align-items: center;
+    padding: 1% 30%;
+}
+#settings>.row>label {
+    margin-right: 3%;
+    font-size: larger;
+}

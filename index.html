@@ -38,6 +38,28 @@
     </div>
   </div>
 
+  <div id="settings" style="display: none;">
+    <div class="row">
+      <label>Tahmin Süresi (sn)</label>
+      <input type="number" id="countDownInput"/>
+    </div>    
+    <div class="row">
+      <label>Hak Sayısı</label>
+      <input type="number" id="attemptInput"/>
+    </div>
+    <div class="row">
+      <label>Sözlük Kontrolü</label>
+      <input type="checkbox" id="dictionaryCheckInput"/>
+    </div>
+    <div class="row">
+      <label>Sadece Favorilerden Getir</label>
+      <input type="checkbox" id="onlyFavInput"/>
+    </div>
+    <div class="row">     
+      <button id="save-setting" onclick="saveSettings()">Kaydet</button>
+    </div>
+  </div>
+
   <div id="game" style="display: none;">
     <h1 id="timer"></h1>
     <div class="input-container">
@@ -59,7 +81,7 @@
   </div>
 
 
-  <script src="app.js?x=2"></script>
+  <script src="app.js?x=3"></script>
 </body>
 
 </html>
