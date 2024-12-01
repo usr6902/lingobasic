@@ -162,7 +162,7 @@ div#settings {
     justify-content: space-between;
     align-content: space-around;
     align-items: center;
-    padding: 1% 30%;
+    padding: 1% 10%;
 }
 #settings>.row>label {
     margin-right: 3%;
