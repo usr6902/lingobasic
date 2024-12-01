@@ -59,23 +59,24 @@ let countDownConfig = 10;
 let countDown = countDownConfig;
 let countDownInterval = null;
 
-function setConfigValues(){
-  const cfg = "Tahmin süresi (sn), Hak sayısı şeklinde aralarında virgül olacak şekilde ve bu sırayla değerleri giriniz.\nMevcut değerler: "+countDownConfig+","+attemptsLeftConfig;
+function setConfigValues() {
+  const cfg = "Tahmin süresi (sn), Hak sayısı şeklinde aralarında virgül olacak şekilde ve bu sırayla değerleri giriniz.\nMevcut değerler: " + countDownConfig + "," + attemptsLeftConfig;
   const ncfg = prompt(cfg);
-  const ncfga=ncfg.split(",");
+  const ncfga = ncfg.split(",");
   if (ncfga.length != 2) {
     alert("Uyumsuz veri girdiğinizden güncelleme yapılamadı");
     return;
   }
-  countDownConfig= +ncfga[0];
-  attemptsLeftConfig=+ncfga[1];;
-  alert("Güncelleme yapıldı. \nTahmin süresi "+countDownConfig+" saniye. \nHak sayısı "+attemptsLeftConfig+" olarak ayarlandı");
+  countDownConfig = +ncfga[0];
+  attemptsLeftConfig = +ncfga[1];
+  localStorage.setItem("configValues", JSON.stringify({ countDown: countDownConfig, attemptsLeft: attemptsLeftConfig }))
+  alert("Güncelleme yapıldı. \nTahmin süresi " + countDownConfig + " saniye. \nHak sayısı " + attemptsLeftConfig + " olarak ayarlandı");
 }
 async function startGame(length) {
 
   userInput = document.getElementById("user-input");
   userInput.addEventListener("keyup", function (event) {
-   if (event.keyCode === 13) {
+    if (event.keyCode === 13) {
       submitGuess();
     }
   });
@@ -175,9 +176,8 @@ function setupGame() {
   focusNextInput();
 }
 
-function showTimer()
-{
-    document.getElementById("timer").textContent ="KALAN SÜRE: "+ countDown;
+function showTimer() {
+  document.getElementById("timer").textContent = "KALAN SÜRE: " + countDown;
 }
 
 function focusNextInput() {
@@ -354,3 +354,11 @@ function submitGuess() {
   focusNextInput();
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  const cfg = localStorage.getItem("configValues");
+  if (cfg) {
+    const pcfg = JSON.parse(cfg);
+    attemptsLeftConfig = pcfg.attemptsLeft;
+    countDownConfig = pcfg.countDown;
+  }
+});
