@@ -1,6 +1,6 @@
 
-String.prototype.replaceAt = function(index, replacement) {
-  return this.substring(0, index) + replacement + this.substring(index + replacement.length); 
+String.prototype.replaceAt = function (index, replacement) {
+  return this.substring(0, index) + replacement + this.substring(index + replacement.length);
 }
 
 const apiUrls = {
@@ -19,6 +19,7 @@ let attemptsLeft = 5;
 let wordLength = 0;
 let currentAttempt = 0;
 let matchedWord = "";
+let userInput = null;
 function trimCaret(str) {
   const map =
   {
@@ -55,6 +56,15 @@ function trimCaret(str) {
 
 async function startGame(length) {
 
+  userInput = document.getElementById("user-input");
+  userInput.addEventListener("keyup", function (event) {
+    if (event.keyCode === 8) {
+      focusInput(event.target.attributes["order"] - 1);
+    }
+    else if (event.keyCode === 13) {
+      submitGuess();
+    }
+  });
   attemptsLeft = 5;
   currentAttempt = 0;
   // Kelimeyi API'den al
@@ -65,7 +75,7 @@ async function startGame(length) {
   } while (targetWord.includes(" "));
 
   wordLength = targetWord.length;
-  matchedWord=new Array(wordLength).join(".");
+  matchedWord = new Array(wordLength + 1).join(".");
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("game").style.display = "block";
@@ -81,8 +91,7 @@ function toggleHint() {
 
 function setupGame() {
   const firstLetter = targetWord[0];
-  matchedWord=matchedWord.replaceAt(0,firstLetter);
-  const userInput = document.getElementById("user-input");
+  matchedWord = matchedWord.replaceAt(0, firstLetter);
   userInput.maxLength = targetWord.length;
   const inputsDiv = document.getElementById("inputs");
   inputsDiv.innerHTML = "";
@@ -123,10 +132,13 @@ function setupGame() {
       // }
       input.readOnly = true;
       input.disabled = true;
-      input.value = matchedWord[i];
-      if (matchedWord[i] === targetWord[i]) {
-        input.classList.add("correct");
-      } 
+      if (attempt === 0) {
+        input.value = matchedWord[i];
+        if (matchedWord[i] === targetWord[i]) {
+          input.classList.add("correct");
+        }
+      }
+
       row.appendChild(input);
     }
     inputsDiv.appendChild(row);
@@ -135,14 +147,8 @@ function setupGame() {
   focusNextInput();
 }
 
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Başlangıçta ilk inputa odaklanma
-  focusNextInput();
-});
-
 function focusNextInput() {
-  document.getElementById("user-input").focus();
+  userInput.focus();
   return;
   const activeRow = document.querySelectorAll(".attempt-row")[currentAttempt];  // Aktif satır
   if (!activeRow)
@@ -227,7 +233,8 @@ async function getWordDescription() {
 }
 
 function submitGuess() {
-  let guess = document.getElementById("user-input").value.trim().toLocaleLowerCase("tr-TR");
+  let guess = userInput.value.trim().toLocaleLowerCase("tr-TR");
+  userInput.value = "";
   if (guess.length !== wordLength) {
     alert("Lütfen tüm harfleri doldurun!");
     return;
@@ -263,7 +270,7 @@ function submitGuess() {
     const letter = guess[i];
     if (letter === targetWord[i]) {
       input.classList.add("correct");
-      matchedWord=matchedWord.replaceAt(i,letter);
+      matchedWord = matchedWord.replaceAt(i, letter);
       usedIndexes.add(i);
       targetLetterCount[letter]--; // Reduce the count of that letter
     }
@@ -305,7 +312,7 @@ function submitGuess() {
     input.value = matchedWord[i];
     if (matchedWord[i] === targetWord[i]) {
       input.classList.add("correct");
-    } 
+    }
   });
   focusNextInput();
 }
