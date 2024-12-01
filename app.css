@@ -3,6 +3,7 @@ body {
   text-align: center;
   margin: 0;
   padding: 0;
+  background: hwb(208deg 20.98% 47.1%);
 }
 
 #stage-selection, #game {
@@ -59,7 +60,7 @@ button:hover {
 }
 
 .wrong {
-  background-color: grey;
+  background-color: transparent;
   color: white;
 }
 
@@ -120,3 +121,18 @@ button#new-game-button:hover {
   background-color: #45a049;
 }
 
+
+
+input.letter-input-org {
+    width: min-content;
+    height: 40px;
+    margin: 0 5px;
+    font-size: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: transparent;
+    color: white;
+    font-weight: 700;
+}

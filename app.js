@@ -13,7 +13,7 @@ let targetWord = "";
 let attemptsLeft = 5;
 let wordLength = 0;
 let currentAttempt = 0;
-
+let matchedWord = "";
 function trimCaret(str) {
   const map =
   {
@@ -52,14 +52,15 @@ async function startGame(length) {
 
   attemptsLeft = 5;
   currentAttempt = 0;
-
   // Kelimeyi API'den al
   const response = await fetch(apiUrls[length]);
   wordList = await response.json();
   do {
     targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
-  } while (targetWord.includes(" "))
+  } while (targetWord.includes(" "));
+
   wordLength = targetWord.length;
+  matchedWord=new Array(wordLength).join(".");
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("game").style.display = "block";
@@ -75,6 +76,9 @@ function toggleHint() {
 
 function setupGame() {
   const firstLetter = targetWord[0];
+  matchedWord[0]=firstLetter;
+  const userInput = document.getElementById("user-input");
+  userInput.maxLength = targetWord.length;
   const inputsDiv = document.getElementById("inputs");
   inputsDiv.innerHTML = "";
 
@@ -89,30 +93,35 @@ function setupGame() {
       input.classList.add("letter-input");
       input.classList.add("letter-input-order-" + i);
       input.attributes["order"] = i;
-      input.addEventListener("input", function (event) {
-        if (event.target.value) {  // Eğer kullanıcı bir harf girdiyse
-          focusNextInput();  // Bir sonraki input'a odaklan
-        }
-      });
+      // input.addEventListener("input", function (event) {
+      //   if (event.target.value) {  // Eğer kullanıcı bir harf girdiyse
+      //     focusNextInput();  // Bir sonraki input'a odaklan
+      //   }
+      // });
 
-      input.addEventListener("keyup", function (event) {
-        if (event.keyCode === 8) {
-          focusInput(event.target.attributes["order"] - 1);
-        }
-        else if (event.keyCode === 13) {
-          submitGuess();
-        }
-      });
+      // input.addEventListener("keyup", function (event) {
+      //   if (event.keyCode === 8) {
+      //     focusInput(event.target.attributes["order"] - 1);
+      //   }
+      //   else if (event.keyCode === 13) {
+      //     submitGuess();
+      //   }
+      // });
 
-      // İlk harf sabit, diğerleri kilitli
-      if (attempt === 0 && i === 0) {
-        input.value = firstLetter;
+      // // İlk harf sabit, diğerleri kilitli
+      // if (attempt === 0 && i === 0) {
+      //   input.value = firstLetter;
+      //   input.classList.add("correct");
+      //   input.readOnly = true;
+      // } else if (attempt !== 0) {
+      //   input.readOnly = true;
+      // }
+      input.readOnly = true;
+      input.disabled = true;
+      input.value = matchedWord[i];
+      if (matchedWord[i] === targetWord[i]) {
         input.classList.add("correct");
-        input.readOnly = true;
-      } else if (attempt !== 0) {
-        input.readOnly = true;
-      }
-
+      } 
       row.appendChild(input);
     }
     inputsDiv.appendChild(row);
@@ -128,6 +137,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function focusNextInput() {
+  document.getElementById("user-input").focus();
+  return;
   const activeRow = document.querySelectorAll(".attempt-row")[currentAttempt];  // Aktif satır
   if (!activeRow)
     return;
@@ -211,17 +222,18 @@ async function getWordDescription() {
 }
 
 function submitGuess() {
-  const rows = document.querySelectorAll(".attempt-row");
-  const currentRow = rows[currentAttempt];
-  const inputs = currentRow.querySelectorAll(".letter-input");
-
-  let guess = "";
-  inputs.forEach(input => guess += input.value.toLocaleLowerCase("tr-TR"));
-
+  let guess = document.getElementById("user-input").value.trim().toLocaleLowerCase("tr-TR");
   if (guess.length !== wordLength) {
     alert("Lütfen tüm harfleri doldurun!");
     return;
   }
+
+  const rows = document.querySelectorAll(".attempt-row");
+  const currentRow = rows[currentAttempt];
+  const inputs = currentRow.querySelectorAll(".letter-input");
+
+
+  inputs.forEach((input, i) => input.value = guess[i]);
 
   if (wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
@@ -246,6 +258,7 @@ function submitGuess() {
     const letter = guess[i];
     if (letter === targetWord[i]) {
       input.classList.add("correct");
+      matchedWord[i]=letter;
       usedIndexes.add(i);
       targetLetterCount[letter]--; // Reduce the count of that letter
     }
@@ -263,7 +276,7 @@ function submitGuess() {
     }
   }
 
-  currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
+  //currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
 
   if (guess === targetWord) {
     getWordDescription().then(x => {
@@ -284,13 +297,10 @@ function submitGuess() {
   currentAttempt++;
   const nextRow = rows[currentAttempt];
   nextRow.querySelectorAll("input").forEach((input, i) => {
-    if (i === 0) {
-      input.value = targetWord[0];
+    input.value = matchedWord[i];
+    if (matchedWord[i] === targetWord[i]) {
       input.classList.add("correct");
-      input.readOnly = true;
-    } else {
-      input.readOnly = false;
-    }
+    } 
   });
   focusNextInput();
 }
