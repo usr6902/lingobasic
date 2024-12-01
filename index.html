@@ -9,6 +9,17 @@
 </head>
 
 <body>
+  <div id="header" style="
+    padding: 0 2%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: space-between;
+">
+
+    <h1>Lingo</h1>
+    <h1 onclick="setConfigValues()">⚙</h1>
+
+</div>
   <div id="stage-selection">
     <h1>BÖLÜM SEÇİN</h1>
     <div class="button-container">
@@ -28,7 +39,7 @@
   </div>
 
   <div id="game" style="display: none;">
-    <h1 id="word-length"></h1>
+    <h1 id="timer"></h1>
     <div class="input-container">
       <div class="input-row">
         <button class="btn btn-hint" onclick="toggleHint()">?</button>

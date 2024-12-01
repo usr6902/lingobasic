@@ -15,7 +15,8 @@ const apiUrls = {
 };
 let wordList = [];
 let targetWord = "";
-let attemptsLeft = 5;
+let attemptsLeftConfig = 5;
+let attemptsLeft = attemptsLeftConfig;
 let wordLength = 0;
 let currentAttempt = 0;
 let matchedWord = "";
@@ -54,6 +55,22 @@ function trimCaret(str) {
   return str;
 }
 
+let countDownConfig = 10;
+let countDown = countDownConfig;
+let countDownInterval = null;
+
+function setConfigValues(){
+  const cfg = "Tahmin süresi (sn), Hak sayısı şeklinde aralarında virgül olacak şekilde ve bu sırayla değerleri giriniz.\nMevcut değerler: "+countDownConfig+","+attemptsLeftConfig;
+  const ncfg = prompt(cfg);
+  const ncfga=ncfg.split(",");
+  if (ncfga.length != 2) {
+    alert("Uyumsuz veri girdiğinizden güncelleme yapılamadı");
+    return;
+  }
+  countDownConfig= +ncfga[0];
+  attemptsLeftConfig=+ncfga[1];;
+  alert("Güncelleme yapıldı. \nTahmin süresi "+countDownConfig+" saniye. \nHak sayısı "+attemptsLeftConfig+" olarak ayarlandı");
+}
 async function startGame(length) {
 
   userInput = document.getElementById("user-input");
@@ -62,7 +79,7 @@ async function startGame(length) {
       submitGuess();
     }
   });
-  attemptsLeft = 5;
+  attemptsLeft = attemptsLeftConfig;
   currentAttempt = 0;
   // Kelimeyi API'den al
   const response = await fetch(apiUrls[length]);
@@ -87,6 +104,7 @@ function toggleHint() {
 }
 
 function setupGame() {
+  showTimer();
   const firstLetter = targetWord[0];
   matchedWord = matchedWord.replaceAt(0, firstLetter);
   userInput.maxLength = targetWord.length;
@@ -140,8 +158,26 @@ function setupGame() {
     }
     inputsDiv.appendChild(row);
   }
-
+  countDownInterval = setInterval(function () {
+    countDown--;
+    showTimer();
+    if (countDown == 0) {
+      clearInterval(countDownInterval);
+      const rows = document.querySelectorAll(".attempt-row");
+      const currentRow = rows[currentAttempt];
+      currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
+      getWordDescription().then(x => {
+        showModal(`<p>Belirlenen süre içerisinde tahminde bulunmadığınızdan oyunu kaybettiniz!<br/>Doğru kelime: ${targetWord}<p><br/>${x}`);
+      });
+      return;
+    }
+  }, 1000);
   focusNextInput();
+}
+
+function showTimer()
+{
+    document.getElementById("timer").textContent ="KALAN SÜRE: "+ countDown;
 }
 
 function focusNextInput() {
@@ -245,6 +281,7 @@ function submitGuess() {
   inputs.forEach((input, i) => input.value = guess[i]);
 
   if (wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
+    clearInterval(countDownInterval);
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
     getWordDescription().then(x => {
       showModal(`<p>Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${x}`);
@@ -288,6 +325,7 @@ function submitGuess() {
   //currentRow.querySelectorAll("input").forEach(input => input.readOnly = true);
 
   if (guess === targetWord) {
+    clearInterval(countDownInterval);
     getWordDescription().then(x => {
       showModal("<p>Tebrikler! Doğru kelimeyi buldunuz.</p><br/>" + x);
     });
@@ -297,6 +335,7 @@ function submitGuess() {
   attemptsLeft--;
 
   if (attemptsLeft === 0) {
+    clearInterval(countDownInterval);
     getWordDescription().then(x => {
       showModal(`<p>Maalesef bilemediniz! Doğru kelime: ${targetWord}</p><br/>${x}`);
     });
@@ -311,6 +350,7 @@ function submitGuess() {
       input.classList.add("correct");
     }
   });
+  countDown = countDownConfig;
   focusNextInput();
 }
 
