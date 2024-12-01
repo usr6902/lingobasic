@@ -101,8 +101,8 @@ function setConfigValues() {
   const cfg = {
     countDown: document.getElementById("countDownInput").value,
     attemptsLeft: document.getElementById("attemptInput").value,
-    checkDictionary: document.getElementById("dictionaryCheckInput").value,
-    onlyFav: document.getElementById("onlyFavInput").value
+    checkDictionary: document.getElementById("dictionaryCheckInput").value != "false",
+    onlyFav: document.getElementById("onlyFavInput").value != "false"
   }
   configuration = cfg;
   localStorage.setItem("configValues", JSON.stringify(cfg));
