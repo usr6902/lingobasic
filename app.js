@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const cfg = localStorage.getItem("configValues");
   if (cfg) {
     const pcfg = JSON.parse(cfg);
-    attemptsLeftConfig = pcfg.attemptsLeft;
-    countDownConfig = pcfg.countDown;
+    attemptsLeft = attemptsLeftConfig = pcfg.attemptsLeft;
+    countDown = countDownConfig = pcfg.countDown;
   }
 });
