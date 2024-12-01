@@ -1,6 +1,7 @@
 
 String.prototype.replaceAt = function(index, replacement) {
-  return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+  this = this.substring(0, index) + replacement + this.substring(index + replacement.length);
+  return this;
 }
 
 const apiUrls = {
@@ -81,7 +82,7 @@ function toggleHint() {
 
 function setupGame() {
   const firstLetter = targetWord[0];
-  matchedWord.replaceAt(0,firstLetter);
+  matchedWord=matchedWord.replaceAt(0,firstLetter);
   const userInput = document.getElementById("user-input");
   userInput.maxLength = targetWord.length;
   const inputsDiv = document.getElementById("inputs");
@@ -263,7 +264,7 @@ function submitGuess() {
     const letter = guess[i];
     if (letter === targetWord[i]) {
       input.classList.add("correct");
-      matchedWord.replaceAt(i,letter);
+      matchedWord=matchedWord.replaceAt(i,letter);
       usedIndexes.add(i);
       targetLetterCount[letter]--; // Reduce the count of that letter
     }
