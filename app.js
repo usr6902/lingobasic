@@ -80,7 +80,7 @@ function showSettingsModal() {
 }
 
 function getConfigValues() {
-  const cfg = localStorage.getItem("configValues");
+  const cfg = JSON.parse(localStorage.getItem("configValues") ?? null);
   return {
     attemptsLeft: cfg?.attemptsLeft ?? 5,
     countDown: cfg?.countDown ?? 15,
