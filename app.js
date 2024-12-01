@@ -58,10 +58,7 @@ async function startGame(length) {
 
   userInput = document.getElementById("user-input");
   userInput.addEventListener("keyup", function (event) {
-    if (event.keyCode === 8) {
-      focusInput(event.target.attributes["order"] - 1);
-    }
-    else if (event.keyCode === 13) {
+   if (event.keyCode === 13) {
       submitGuess();
     }
   });

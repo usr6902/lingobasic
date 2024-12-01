@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kelime Tahmin Oyunu</title>
   <link rel="stylesheet" href="app.css">
 </head>
+
 <body>
   <div id="stage-selection">
-    <h1>Kelime Uzunluğunu Seçin</h1>
+    <h1>BÖLÜM SEÇİN</h1>
     <div class="button-container">
-      <button style="width: -webkit-fill-available;" onclick="startGame(4)">4 Harfli</button>
-      <button style="width: -webkit-fill-available;" onclick="startGame(5)">5 Harfli</button>
-      <button style="width: -webkit-fill-available;" onclick="startGame(6)">6 Harfli</button>
-      <button style="width: -webkit-fill-available;" onclick="startGame(7)">7 Harfli</button>
-  
-      <button style="width: -webkit-fill-available;" onclick="startGame('4tdk')">4 Harfli (TDK)</button>
-      <button style="width: -webkit-fill-available;" onclick="startGame('5tdk')">5 Harfli (TDK)</button>
-      <button style="width: -webkit-fill-available;" onclick="startGame('6tdk')">6 Harfli (TDK)</button>
-      <button style="width: -webkit-fill-available;" onclick="startGame('7tdk')">7 Harfli (TDK)</button>
+      <button onclick="startGame(4)" class="bolum">4 Harfli</button>
+      <button onclick="startGame(5)" class="bolum">5 Harfli</button>
+      <button onclick="startGame(6)" class="bolum">6 Harfli</button>
+      <button onclick="startGame(7)" class="bolum">7 Harfli</button>
+    </div>
+
+    <h1>TDK SERİSİ</h1>
+    <div class="button-container">
+      <button onclick="startGame('4tdk')" class="bolum">4 Harfli (TDK)</button>
+      <button onclick="startGame('5tdk')" class="bolum">5 Harfli (TDK)</button>
+      <button onclick="startGame('6tdk')" class="bolum">6 Harfli (TDK)</button>
+      <button onclick="startGame('7tdk')" class="bolum">7 Harfli (TDK)</button>
     </div>
   </div>
 
@@ -29,7 +34,7 @@
         <button class="btn btn-hint" onclick="toggleHint()">?</button>
         <input id="user-input" type="text" maxlength="7" class="letter-input-org"><button class="btn btn-send"
           onclick="submitGuess()">»</button>
-    
+
       </div>
     </div>
     <div id="inputs"></div>
@@ -42,7 +47,8 @@
     </div>
   </div>
 
-  
+
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -3,7 +3,7 @@ body {
   text-align: center;
   margin: 0;
   padding: 0;
-  background: hwb(208deg 20.98% 47.1%);
+  background: #012056;
 }
 
 #stage-selection, #game {
@@ -12,9 +12,13 @@ body {
 
 .button-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   gap: 10px;
+  margin: 2%;
+  align-content: center;
   flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 5%;
 }
 
 button {
@@ -135,4 +139,16 @@ input.letter-input-org {
     background: transparent;
     color: white;
     font-weight: 700;
+}
+
+h1 {
+    color: white;
+}
+
+button.bolum {
+  height:15vh;
+  width: 45vw;
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: orange;
 }
