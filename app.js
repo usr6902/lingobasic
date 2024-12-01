@@ -70,8 +70,8 @@ function showSettingsModal() {
   const cfg = getConfigValues();
   document.getElementById("countDownInput").value = cfg.countDown;
   document.getElementById("attemptInput").value = cfg.attemptsLeft;
-  document.getElementById("dictionaryCheckInput").value = cfg.checkDictionary;
-  document.getElementById("onlyFavInput").value = cfg.onlyFav;
+  document.getElementById("dictionaryCheckInput").checked = cfg.checkDictionary;
+  document.getElementById("onlyFavInput").checked = cfg.onlyFav;
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("settings").style.display = "block";
@@ -101,8 +101,8 @@ function setConfigValues() {
   const cfg = {
     countDown: document.getElementById("countDownInput").value,
     attemptsLeft: document.getElementById("attemptInput").value,
-    checkDictionary: document.getElementById("dictionaryCheckInput").value != "false",
-    onlyFav: document.getElementById("onlyFavInput").value != "false"
+    checkDictionary: document.getElementById("dictionaryCheckInput").checked,
+    onlyFav: document.getElementById("onlyFavInput").checked
   }
   configuration = cfg;
   localStorage.setItem("configValues", JSON.stringify(cfg));
