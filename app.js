@@ -1,7 +1,6 @@
 
 String.prototype.replaceAt = function(index, replacement) {
-  this = this.substring(0, index) + replacement + this.substring(index + replacement.length);
-  return this;
+  return this.substring(0, index) + replacement + this.substring(index + replacement.length); 
 }
 
 const apiUrls = {
