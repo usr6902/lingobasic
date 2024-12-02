@@ -20,9 +20,8 @@
 </head>
 <body>
     <div id="main-screen">
-        <h1 class="center-align">Kelimeler Uygulaması</h1>
         <div class="kelime-box center-align">
-            <h4 id="current-word"></h4>
+            <h1 id="current-word"></h1>
             <button id="favori-btn" class="btn green">Favoriye Ekle</button>
             <button id="kara-btn" class="btn red">Kara Listeye Ekle</button>
         </div>
@@ -76,7 +75,7 @@
 
         // JSON dosyasını yükleme
         const loadSourceData = async () => {
-            if (source) {               
+            if (storageKey) {               
                 try {
                     const response = await fetch("json/"+source);
                     const data = await response.json();
