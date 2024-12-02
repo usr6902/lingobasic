@@ -78,7 +78,7 @@
         // JSON dosyasını yükleme
         const loadSourceData = async () => {
             var flag = localStorage.getItem(storageKey)
-            if (!storageKey) {               
+            if (!flag) {               
                 try {
                     const response = await fetch("json/"+storageKey);
                     const data = await response.json();
