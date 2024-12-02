@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelimeler Uygulaması</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
+    <style>
+        body {
+            padding: 20px;
+        }
+        .kelime-box {
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-screen">
+        <h1 class="center-align">Kelimeler Uygulaması</h1>
+        <div class="kelime-box center-align">
+            <h4 id="current-word"></h4>
+            <button id="favori-btn" class="btn green">Favoriye Ekle</button>
+            <button id="kara-btn" class="btn red">Kara Listeye Ekle</button>
+        </div>
+        <div class="center-align">
+            <button class="btn blue" onclick="showScreen('favori-screen')">Favorilerim</button>
+            <button class="btn orange" onclick="showScreen('kara-screen')">Kara Listem</button>
+        </div>
+    </div>
+
+    <!-- Favori Ekranı -->
+    <div id="favori-screen" class="hidden">
+        <h2>Favorilerim</h2>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Kelime</th>
+                    <th>Aksiyon</th>
+                </tr>
+            </thead>
+            <tbody id="favori-list"></tbody>
+        </table>
+        <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
+    </div>
+
+    <!-- Kara Liste Ekranı -->
+    <div id="kara-screen" class="hidden">
+        <h2>Kara Listem</h2>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Kelime</th>
+                    <th>Aksiyon</th>
+                </tr>
+            </thead>
+            <tbody id="kara-list"></tbody>
+        </table>
+        <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
+    </div>
+
+    <script>
+        // LocalStorage kontrolü ve veriyi alma
+        let storageKey = "";
+        const getKelimeler = () => JSON.parse(localStorage.getItem(storageKey)) || [];
+        const setKelimeler = (data) => localStorage.setItem(storageKey, JSON.stringify(data));
+
+        // URL'deki parametreleri alma
+        const getUrlParameter = (name) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        };
+
+        // JSON dosyasını yükleme
+        const loadSourceData = async () => {
+            if (source) {               
+                try {
+                    const response = await fetch("json/"+source);
+                    const data = await response.json();
+                    setKelimeler(data);
+                } catch (error) {
+                    console.error("Kaynak verileri yüklenemedi:", error);
+                }
+            }
+        };
+
+        // Kelimeyi sıradaki kelimeye göre güncelle
+        const renderNextWord = () => {
+            const kelimeler = getKelimeler();
+            const next = kelimeler.find(k => !k.favori);
+            const wordElement = document.getElementById("current-word");
+            wordElement.textContent = next ? next.kelime : "Tüm kelimeler işlendi!";
+        };
+
+        // Kelimeyi güncelle
+        const updateWord = (kelime, durum) => {
+            const kelimeler = getKelimeler();
+            const updated = kelimeler.map(k => k.kelime === kelime ? { ...k, favori: durum } : k);
+            setKelimeler(updated);
+            renderNextWord();
+        };
+
+        // Listeyi render et
+        const renderList = (listId, filterCondition) => {
+            const kelimeler = getKelimeler();
+            const filtered = kelimeler.filter(filterCondition);
+            const listElement = document.getElementById(listId);
+            listElement.innerHTML = filtered.map(k => `
+                <tr>
+                    <td>${k.kelime}</td>
+                    <td>
+                        <button class="btn-small red" onclick="updateWord('${k.kelime}', null)">Favoriden Çıkar</button>
+                        <button class="btn-small orange" onclick="updateWord('${k.kelime}', -1)">Kara Listeye Al</button>
+                    </td>
+                </tr>
+            `).join("");
+        };
+
+        // Ekranları değiştir
+        const showScreen = (screenId) => {
+            document.getElementById("main-screen").classList.add("hidden");
+            document.getElementById("favori-screen").classList.add("hidden");
+            document.getElementById("kara-screen").classList.add("hidden");
+
+            document.getElementById(screenId).classList.remove("hidden");
+
+            if (screenId === "favori-screen") {
+                renderList("favori-list", k => k.favori === 1);
+            } else if (screenId === "kara-screen") {
+                renderList("kara-list", k => k.favori === -1);
+            }
+        };
+
+        document.getElementById("favori-btn").addEventListener("click", () => {
+            const kelime = document.getElementById("current-word").textContent;
+            if (kelime) updateWord(kelime, 1);
+        });
+
+        document.getElementById("kara-btn").addEventListener("click", () => {
+            const kelime = document.getElementById("current-word").textContent;
+            if (kelime) updateWord(kelime, -1);
+        });
+
+        // Sayfa yüklendiğinde
+        window.onload = async () => {
+            const source = getUrlParameter("source");
+          if(!source)
+          {
+            alert("source parametresi verilmeden işlem yapılamaz");
+            throw "source parametresi verilmeden işlem yapılamaz";
+          }
+           storageKey = source;
+            await loadSourceData();
+            renderNextWord();
+        };
+    </script>
+</body>
+</html>
