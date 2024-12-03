@@ -3,7 +3,7 @@ String.prototype.replaceAt = function (index, replacement) {
   return this.substring(0, index) + replacement + this.substring(index + replacement.length);
 }
 
-const apiUrls = {
+const dictionaryUrls = {
   "4": "json/4harf.json",
   "5": "json/5harf.json",
   "6": "json/6harf.json",
@@ -11,7 +11,11 @@ const apiUrls = {
   "4tdk": "json/4tdk.json",
   "5tdk": "json/5tdk.json",
   "6tdk": "json/6tdk.json",
-  "7tdk": "json/7tdk.json"
+  "7tdk": "json/7tdk.json",
+  "4tdkfu": "json/4tdk.json",
+  "5tdkfu": "json/5tdk.json",
+  "6tdkfu": "json/6tdk.json",
+  "7tdkfu": "json/7tdk.json"
 };
 
 
@@ -23,6 +27,7 @@ let configuration={
 }
 
 let wordList = [];
+let dictionary = [];
 let targetWord = "";
 let attemptsLeft = configuration.attemptsLeft;
 let wordLength = 0;
@@ -122,7 +127,9 @@ async function startGame(length) {
   currentAttempt = 0;
   // Kelimeyi API'den al
   const response = await fetch("json/"+length+".json");
+  const dictResponse = await fetch(dictionaryUrls[length]);
   wordList = await response.json();
+  dictionary = await dictResponse.json();
   do {
     targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
   } while (targetWord.includes(" "));
@@ -320,7 +327,7 @@ function submitGuess() {
 
   inputs.forEach((input, i) => input.value = guess[i]);
 
-  if (configuration.checkDictionary && wordList.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
+  if (configuration.checkDictionary && dictionary.filter(x => trimCaret(x.kelime).toLocaleLowerCase("tr-TR") == guess.toLocaleLowerCase("tr-TR")).length === 0) {
     clearInterval(countDownInterval);
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
     getWordDescription().then(x => {
