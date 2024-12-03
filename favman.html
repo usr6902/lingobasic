@@ -37,7 +37,7 @@
 
     <!-- Favori Ekranı -->
     <div id="favori-screen" class="hidden">
-        <h2>Favorilerim</h2>
+        <h4>Favorilerim</h4>
         <table class="striped">
             <thead>
                 <tr>
@@ -53,7 +53,7 @@
     
     <!-- Tüm Kelimeler Ekranı -->
     <div id="all-screen" class="hidden">
-        <h2>Tüm Kelimelerim</h2>
+        <h4>Tüm Kelimelerim</h4>
         <table class="striped">
             <thead>
                 <tr>
@@ -68,7 +68,7 @@
 
     <!-- Kara Liste Ekranı -->
     <div id="kara-screen" class="hidden">
-        <h2>Kara Listem</h2>
+        <h4>Kara Listem</h4>
         <table class="striped">
             <thead>
                 <tr>
@@ -155,7 +155,7 @@
             } else if (screenId === "kara-screen") {
                 renderList("kara-list", k => k.favori === -1);
             } else if (screenId === "all-screen") {
-                renderList("kara-list", k => true);
+                renderList("all-list", k => true);
             }
         };
 
