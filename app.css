@@ -141,7 +141,7 @@ input.letter-input-org {
     font-weight: 700;
 }
 
-h1,h2 {
+h1,h2,h3,h4,h5,h6 {
     color: white;
 }
 
