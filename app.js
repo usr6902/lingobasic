@@ -121,7 +121,7 @@ async function startGame(length) {
   });
   currentAttempt = 0;
   // Kelimeyi API'den al
-  const response = await fetch(apiUrls[length]);
+  const response = await fetch("json/"+length+".json");
   wordList = await response.json();
   do {
     targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
