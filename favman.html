@@ -116,12 +116,10 @@
         };
 
         // Kelimeyi güncelle
-        const updateWord = (kelime, durum, willRenderList) => {
+        const updateWord = (kelime, durum) => {
             const kelimeler = getKelimeler();
             const updated = kelimeler.map(k => k.kelime === kelime ? { ...k, favori: durum } : k);
             setKelimeler(updated);
-            if(willRenderList)
-                
             renderNextWord();
         };
 
@@ -130,13 +128,14 @@
             const kelimeler = getKelimeler();
             const filtered = kelimeler.filter(filterCondition);
             const listElement = document.getElementById(listId);
+            const targetScreen=listId.split("-")[0];
             listElement.innerHTML = filtered.map(k => `
                 <tr>
                     <td>${k.kelime}</td>
                     <td>
-                        <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', 1); showScreen('${listId.split(\"-\")[0]}-screen')"><i class="material-icons">favorite</i></button>&nbsp;
-                        <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" onclick="updateWord('${k.kelime}', null); showScreen('${listId.split(\"-\")[0]}-screen')"><i class="material-icons">autorenew</i></button>&nbsp;
-                        <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', -1);  showScreen('${listId.split(\"-\")[0]}-screen')"><i class="material-icons">block</i></button>
+                        <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', 1); showScreen('${targetScreen}-screen')"><i class="material-icons">favorite</i></button>&nbsp;
+                        <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" onclick="updateWord('${k.kelime}', null); showScreen('${targetScreen}-screen')"><i class="material-icons">autorenew</i></button>&nbsp;
+                        <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', -1);  showScreen('${targetScreen}-screen')"><i class="material-icons">block</i></button>
                     </td>
                 </tr>
             `).join("");
