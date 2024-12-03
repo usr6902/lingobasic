@@ -21,7 +21,7 @@ body {
   margin-bottom: 5%;
 }
 
-button {
+button, .button {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
@@ -32,7 +32,7 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+button:hover, .button:hover {
   background-color: #0056b3;
 }
 
@@ -141,7 +141,7 @@ input.letter-input-org {
     font-weight: 700;
 }
 
-h1 {
+h1,h2 {
     color: white;
 }
 
