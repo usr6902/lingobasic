@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelimeler Uygulaması</title>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
     <style>
@@ -44,6 +45,22 @@
                 </tr>
             </thead>
             <tbody id="favori-list"></tbody>
+        </table>
+        <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
+    </div>
+
+    
+    <!-- Tüm Kelimeler Ekranı -->
+    <div id="all-screen" class="hidden">
+        <h2>Tüm Kelimelerim</h2>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>Kelime</th>
+                    <th>Aksiyon</th>
+                </tr>
+            </thead>
+            <tbody id="all-list"></tbody>
         </table>
         <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
     </div>
@@ -114,13 +131,14 @@
                 <tr>
                     <td>${k.kelime}</td>
                     <td>
-                        <button class="btn-small red" onclick="updateWord('${k.kelime}', null)">Favoriden Çıkar</button>
-                        <button class="btn-small orange" onclick="updateWord('${k.kelime}', -1)">Kara Listeye Al</button>
+                        <button class="btn-small red" onclick="updateWord('${k.kelime}', 1)"><i class="material-icons">favorite</i></button>&nbsp;
+                        <button class="btn-small red" onclick="updateWord('${k.kelime}', null)"><i class="material-icons">autorenew</i></button>&nbsp;
+                        <button class="btn-small orange" onclick="updateWord('${k.kelime}', -1)"><i class="material-icons">block</i></button>
                     </td>
                 </tr>
             `).join("");
         };
-
+        
         // Ekranları değiştir
         const showScreen = (screenId) => {
             document.getElementById("main-screen").classList.add("hidden");
