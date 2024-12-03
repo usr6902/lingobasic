@@ -336,6 +336,15 @@ function submitGuess() {
     return;
   }
 
+  if (guess.toLocaleLowerCase("tr-TR")[0]!=targetWord.toLocaleLowerCase("tr-TR")[0]) {
+    clearInterval(countDownInterval);
+    currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
+    getWordDescription().then(x => {
+      showModal(`<p>Yasak harfle başladığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${x}`);
+    });
+    return;
+  }
+
   const feedback = [];
   const usedIndexes = new Set();
   const targetLetterCount = {}; // Count occurrences of each letter in the target word
