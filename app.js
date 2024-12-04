@@ -113,7 +113,30 @@ function setConfigValues() {
   localStorage.setItem("configValues", JSON.stringify(cfg));
   alert("Güncelleme yapıldı.");
 }
-async function startGame(length) {
+
+
+const getWords = async (key) => {
+  const data = JSON.parse(localStorage.getItem("source_"+key)) || [];
+  if(data.length)
+    return data;
+  const res = await loadSourceData(key).map(k=>{return {kelime:trimCaret(k.kelime).toLocaleLowerCase("tr-TR")};});
+  setWords(key, res);
+  return res;
+}
+const setWords = (key, data) => localStorage.setItem("source_"+key, JSON.stringify(data));
+
+const loadSourceData = async (source) => {           
+                try {
+                    const response = await fetch("json/"+source+".json");
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error("Kaynak verileri yüklenemedi:", error);
+                  return [];
+                }
+        };
+
+async function startGame(key) {
   configuration = getConfigValues();
   attemptsLeft = configuration.attemptsLeft;
   countDown = configuration.countDown;
@@ -126,14 +149,21 @@ async function startGame(length) {
   });
   currentAttempt = 0;
   // Kelimeyi API'den al
-  const response = await fetch("json/"+length+".json");
-  const dictResponse = await fetch(dictionaryUrls[length]);
-  wordList = await response.json();
+  const dictResponse = await fetch(dictionaryUrls[key]);
+  wordList = await getWords(key);
   dictionary = await dictResponse.json();
-  do {
-    targetWord = trimCaret(wordList[Math.floor(Math.random() * wordList.length)].kelime).toLocaleLowerCase("tr-TR");
-  } while (targetWord.includes(" "));
+  let fx = 0;
 
+  let filteredWords = [];
+  do {
+    filteredWords = wordList.filter(f=> +localStorage.getItem("frekans_"+f.kelime) == fx && !f.kelime.includes(" "));
+    fx++;
+  } while(filteredWords.length == 0)
+  
+  
+  targetWord = filteredWords[Math.floor(Math.random() * filteredWords.length)].kelime;
+  let lsv = +localStorage.getItem("frekans_"+targetWord);
+  localStorage.setItem("frekans_"+targetWord, ++lsv);
   wordLength = targetWord.length;
   matchedWord = new Array(wordLength + 1).join(".");
 
@@ -215,7 +245,7 @@ function setupGame() {
       const currentRow = rows[currentAttempt];
       currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
       getWordDescription().then(x => {
-        showModal(`<p>Belirlenen süre içerisinde tahminde bulunmadığınızdan oyunu kaybettiniz!<br/>Doğru kelime: ${targetWord}<p><br/>${x}`);
+        showModal(`<p>Belirlenen süre içerisinde tahminde bulunmadığınızdan oyunu kaybettiniz!</p><p>Doğru kelime: ${targetWord.toUpperCase()}</p>${x}`);
       });
       return;
     }
@@ -258,7 +288,7 @@ function focusInput(order) {
 function showModal(message) {
   const modal = document.getElementById("success-modal");
   const modalMessage = document.getElementById("modal-message");
-  modalMessage.innerHTML = message;
+  modalMessage.innerHTML = '<label class="bgyellow frekans">Bu kelimeyi şu an "+localStorage.getItem("frekans_"+targetWord)+". defa çözdünüz!</label>' + message;
   modal.style.display = "block";
 
   // Yeni Oyun butonu işlevi
@@ -276,7 +306,7 @@ async function getWordDescription() {
     const wordData = data[0]; // İlk sonuç üzerinde çalışıyoruz.
 
     // Kelimenin kendisi
-    const wordTitle = `<h2>${wordData.madde || "Kelime bulunamadı"}</h2>`;
+    const wordTitle = `<h2 class="cblack">${wordData.madde.toLocaleUpperCase("tr") || "Kelime bulunamadı"}</h2>`;
 
     // Anlamlar listesini işleme
     const meaningsList = wordData.anlamlarListe.map((anlam) => {
@@ -284,7 +314,7 @@ async function getWordDescription() {
       const meaningText = anlam.anlam || "Anlam bulunamadı.";
       const examplesList = anlam.orneklerListe
         ? `
-        <h4>Örnekler</h4>
+        <h4 class="cblack">Örnekler</h4>
         <ul>
           ${anlam.orneklerListe.map((example) => `<li>${example.ornek}</li>`).join("")}
         </ul>
@@ -331,7 +361,7 @@ function submitGuess() {
     clearInterval(countDownInterval);
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
     getWordDescription().then(x => {
-      showModal(`<p>Sözlükte olmayan kelime kullandığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${x}`);
+      showModal(`<p>Sözlükte olmayan kelime kullandığınızdan elendiniz!</p><p>Doğru kelime: ${targetWord.toUpperCase()}</p>${x}`);
     });
     return;
   }
@@ -340,7 +370,7 @@ function submitGuess() {
     clearInterval(countDownInterval);
     currentRow.querySelectorAll("input").forEach(input => input.classList.add("gameover"));
     getWordDescription().then(x => {
-      showModal(`<p>Yasak harfle başladığınızdan elendiniz! Doğru kelime: ${targetWord}<p><br/>${x}`);
+      showModal(`<p>Yasak harfle başladığınızdan elendiniz!</p><p>Doğru kelime: ${targetWord.toUpperCase()}</p>${x}`);
     });
     return;
   }
@@ -383,7 +413,7 @@ function submitGuess() {
   if (guess === targetWord) {
     clearInterval(countDownInterval);
     getWordDescription().then(x => {
-      showModal("<p>Tebrikler! Doğru kelimeyi buldunuz.</p><br/>" + x);
+      showModal("<p>Tebrikler!</p><p>Doğru kelimeyi buldunuz.</p>" + x);
     });
     return;
   }
@@ -393,7 +423,7 @@ function submitGuess() {
   if (attemptsLeft === 0) {
     clearInterval(countDownInterval);
     getWordDescription().then(x => {
-      showModal(`<p>Maalesef bilemediniz! Doğru kelime: ${targetWord}</p><br/>${x}`);
+      showModal(`<p>Maalesef bilemediniz!</p><p>Doğru kelime: ${targetWord.toUpperCase()}</p>${x}`);
     });
     return;
   }
