@@ -168,3 +168,20 @@ div#settings {
     margin-right: 3%;
     font-size: larger;
 }
+
+
+.bgyellow {
+    background: yellow;
+    padding: 5px;
+    line-height: 2;
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+}
+.frekans {
+    font-size: small;
+}
+.cblack {
+    color: black;
+}
