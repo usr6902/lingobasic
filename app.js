@@ -288,7 +288,7 @@ function focusInput(order) {
 function showModal(message) {
   const modal = document.getElementById("success-modal");
   const modalMessage = document.getElementById("modal-message");
-  modalMessage.innerHTML = '<label class="bgyellow frekans">Bu kelimeyi şu an "+localStorage.getItem("frekans_"+targetWord)+". defa çözdünüz!</label>' + message;
+  modalMessage.innerHTML = '<label class="bgyellow frekans">Bu kelimeyi şu an '+localStorage.getItem("frekans_"+targetWord)+'. defa çözdünüz!</label>' + message;
   modal.style.display = "block";
 
   // Yeni Oyun butonu işlevi
