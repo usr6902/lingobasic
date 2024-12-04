@@ -127,12 +127,12 @@
             try {
                 const response = await fetch(url);
                 const words = await response.json();
-                const filteredWords = words
+                const filteredWords = words.map(w=>w.kelime)
                     .filter(word => word.startsWith(char))
                     .sort();
                 displayWords(filteredWords);
             } catch (error) {
-                M.toast({ html: 'Kelime listesi alınırken bir hata oluştu.'+error, classes: 'red' });
+                M.toast({ html: 'Kelime listesi alınırken bir hata oluştu.', classes: 'red' });
             }
         }
 
@@ -159,10 +159,7 @@
         }
 
         function goToHome() {
-            document.getElementById('main-container').style.display = 'flex';
-            document.getElementById('alphabet-container').style.display = 'none';
-            document.getElementById('words-container').style.display = 'none';
-            currentLevel = 'main';
+            location.href="index.html";
         }
     </script>
 </body>
