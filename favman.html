@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -112,7 +112,7 @@
             const kelimeler = getKelimeler();
             const next = kelimeler.find(k => !k.favori);
             const wordElement = document.getElementById("current-word");
-            wordElement.textContent = next ? next.kelime : "Tüm kelimeler işlendi!";
+            wordElement.textContent = next ? next.kelime.toLocaleUpperCase("tr"): "Tüm kelimeler işlendi!";
         };
 
         // Kelimeyi güncelle
@@ -129,7 +129,11 @@
             const filtered = kelimeler.filter(filterCondition);
             const listElement = document.getElementById(listId);
             const targetScreen=listId.split("-")[0];
-            listElement.innerHTML = filtered.map(k => `
+            listElement.innerHTML = filtered.sort((a, b) => {
+    if (a.kelime < b.kelime) return -1;
+    if (a.kelime > b.kelime) return 1;
+    return 0;
+}).map(k => `
                 <tr>
                     <td>${k.kelime}</td>
                     <td>
