@@ -132,7 +132,7 @@
                     .sort();
                 displayWords(filteredWords);
             } catch (error) {
-                M.toast({ html: 'Kelime listesi alınırken bir hata oluştu.', classes: 'red' });
+                M.toast({ html: 'Kelime listesi alınırken bir hata oluştu.'+error, classes: 'red' });
             }
         }
 
