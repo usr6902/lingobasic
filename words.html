@@ -128,7 +128,7 @@
                 const response = await fetch(url);
                 const words = await response.json();
                 const filteredWords = words.map(w=>w.kelime)
-                    .filter(word => word.startsWith(char))
+                    .filter(word => word.toLocaleLowerCase("tr-TR").startsWith(char.toLocaleLowerCase("tr-TR")))
                     .sort();
                 displayWords(filteredWords);
             } catch (error) {
