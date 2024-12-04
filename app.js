@@ -119,7 +119,7 @@ const getWords = async (key) => {
   const data = JSON.parse(localStorage.getItem("source_"+key)) || [];
   if(data.length)
     return data;
-  const res = await loadSourceData(key).map(k=>{return {kelime:trimCaret(k.kelime).toLocaleLowerCase("tr-TR")};});
+  const res = (await loadSourceData(key)).map(k=>{return {kelime:trimCaret(k.kelime).toLocaleLowerCase("tr-TR")};});
   setWords(key, res);
   return res;
 }
