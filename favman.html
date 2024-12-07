@@ -32,7 +32,7 @@
                 <button class="btn orange" onclick="showScreen('all-screen')">Tüm Listem</button>
                 <button class="btn green" onclick="showScreen('favori-screen')">Favorilerim</button>
                 <button class="btn red" onclick="showScreen('kara-screen')">Kara Listem</button>
-                <button class="btn orange" onclick="showScene(function(a, b) {  
+                <button class="btn orange" onclick="const x=prompt('İçinde en az kaç farklı sesli harf olsun','2'); showScene(function(a, b) {  
                                   const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
                                   const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
                                 
@@ -40,12 +40,12 @@
                                   return bSesli - aSesli;
                                             }, 
                                             function(item){ 
-                      return sesliHarfSayisi(item.kelime, true) > 2
+                      return sesliHarfSayisi(item.kelime, true) > +x
                     })">İçinde En Az 2 Farklı Sesli Harf Geçen</button>
 
-<button class="btn orange" onclick="showScene(null, 
+<button class="btn orange" onclick="const y=prompt('İçinde en çok kaç sesli harf olsun','1'); showScene(null, 
               function(item){ 
-return sesliHarfSayisi(item.kelime) < 2
+return sesliHarfSayisi(item.kelime) < +y
 })">İçinde En Çok 1 Sesli Harf Geçen</button>
             
             </div>
