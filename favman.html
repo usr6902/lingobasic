@@ -192,7 +192,7 @@ return sesliHarfSayisi(item.kelime) <= +y
               for (const harf of kelime) {
                 if (sesliHarfler.includes(trimCaret(harf.toLocaleLowerCase("tr")))) {
                     if(isBenzersiz)
-                        benzersizHarfler.add(harf);
+                        benzersizHarfler.add(trimCaret(harf.toLocaleLowerCase("tr")));
                     else
                         benzersizHarfler.add(new Date());
                 }
