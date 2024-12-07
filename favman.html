@@ -27,12 +27,28 @@
             <h1 id="current-word"></h1>
             <button id="favori-btn" class="btn green">Favoriye Ekle</button>
             <button id="kara-btn" class="btn red">Kara Listeye Ekle</button>
-        </div>
-        <div class="center-align">
-            <button class="btn blue" onclick="showScreen('favori-screen')">Favorilerim</button>
-            <button class="btn orange" onclick="showScreen('kara-screen')">Kara Listem</button>
-            <button class="btn orange" onclick="showScreen('all-screen')">Tüm Listem</button>
-        </div>
+            </div>
+            <div class="scenes">
+                <button class="btn orange" onclick="showScreen('all-screen')">Tüm Listem</button>
+                <button class="btn green" onclick="showScreen('favori-screen')">Favorilerim</button>
+                <button class="btn red" onclick="showScreen('kara-screen')">Kara Listem</button>
+                <button class="btn orange" onclick="showScene(function(a, b) {  
+                                  const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
+                                  const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
+                                
+                                  // Çoktan aza doğru sıralama için b - a
+                                  return bSesli - aSesli;
+                                            }, 
+                                            function(item){ 
+                      return sesliHarfSayisi(item.kelime, true) > 2
+                    })">İçinde En Az 2 Farklı Sesli Harf Geçen</button>
+
+<button class="btn orange" onclick="showScene(null, 
+              function(item){ 
+return sesliHarfSayisi(item.kelime) < 2
+})">İçinde En Çok 1 Sesli Harf Geçen</button>
+            
+            </div>
     </div>
 
     <!-- Favori Ekranı -->
@@ -124,8 +140,10 @@
         };
 
         // Listeyi render et
-        const renderList = (listId, filterCondition) => {
-            const kelimeler = getKelimeler();
+        const renderList = (listId, filterCondition, sortCondition) => {
+            let kelimeler = getKelimeler();
+            if(sortCondition)
+                kelimeler = kelimeler.sort(sortCondition);
             const filtered = kelimeler.filter(filterCondition);
             const listElement = document.getElementById(listId);
             const targetScreen=listId.split("-")[0];
@@ -162,6 +180,30 @@
                 renderList("all-list", k => true);
             }
         };
+
+        const sesliHarfSayisi=(kelime, isBenzersiz) => {
+              const sesliHarfler = "aeıioöuü";
+              const benzersizHarfler = new Set();
+              // Her harfi kontrol edip sesli harfler setine ekliyoruz
+              for (const harf of kelime) {
+                if (sesliHarfler.includes(harf)) {
+                    if(isBenzersiz)
+                        benzersizHarfler.add(harf);
+                    else
+                        benzersizHarfler.add(new Date());
+                }
+              }
+
+              return benzersizHarfler.size;
+            } 
+
+        const showScene=(sortRule, filterRule)=>{
+            document.getElementById("main-screen").classList.add("hidden");
+            document.getElementById("favori-screen").classList.add("hidden");
+            document.getElementById("kara-screen").classList.add("hidden");
+            document.getElementById("all-screen").classList.remove("hidden");
+            renderList("all-list", filterRule, sortRule);
+        }
 
         document.getElementById("favori-btn").addEventListener("click", () => {
             const kelime = document.getElementById("current-word").textContent;
