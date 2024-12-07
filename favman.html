@@ -41,12 +41,12 @@
                                             }, 
                                             function(item){ 
                       return sesliHarfSayisi(item.kelime, true) > +x
-                    })">İçinde En Az 2 Farklı Sesli Harf Geçen</button>
+                    })">İçinde En Az X Farklı Sesli Harf Geçen</button>
 
 <button class="btn orange" onclick="const y=prompt('İçinde en çok kaç sesli harf olsun','1'); showScene(null, 
               function(item){ 
-return sesliHarfSayisi(item.kelime) < +y
-})">İçinde En Çok 1 Sesli Harf Geçen</button>
+return sesliHarfSayisi(item.kelime) <= +y
+})">İçinde En Çok X Sesli Harf Geçen</button>
             
             </div>
     </div>
