@@ -186,7 +186,7 @@ return sesliHarfSayisi(item.kelime) < 2
               const benzersizHarfler = new Set();
               // Her harfi kontrol edip sesli harfler setine ekliyoruz
               for (const harf of kelime) {
-                if (sesliHarfler.includes(harf)) {
+                if (sesliHarfler.includes(trimCaret(harf.toLocaleLowerCase("tr")))) {
                     if(isBenzersiz)
                         benzersizHarfler.add(harf);
                     else
@@ -196,6 +196,40 @@ return sesliHarfSayisi(item.kelime) < 2
 
               return benzersizHarfler.size;
             } 
+
+            function trimCaret(str) {
+  const map =
+  {
+    "Â": "A",
+    "â": "a",
+    "Ĉ": "C",
+    "ĉ": "c",
+    "Ê": "E",
+    "ê": "e",
+    "Ĝ": "G",
+    "ĝ": "g",
+    "Ĥ": "H",
+    "ĥ": "h",
+    "Î": "İ",
+    "î": "i",
+    "Ĵ": "J",
+    "ĵ": "j",
+    "Ô": "O",
+    "ô": "o",
+    "Ŝ": "S",
+    "ŝ": "s",
+    "Û": "U",
+    "û": "u",
+    "Ŷ": "Y",
+    "ŷ": "y",
+    "Ẑ": "Z",
+    "ẑ": "z"
+  }
+  for (const m in map) {
+    str = str.replace(new RegExp(m, 'g'), map[m]);
+  }
+  return str;
+}
 
         const showScene=(sortRule, filterRule)=>{
             document.getElementById("main-screen").classList.add("hidden");
