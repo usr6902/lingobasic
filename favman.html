@@ -51,6 +51,11 @@
               function(item){ 
 return sesliHarfSayisi(item.kelime) <= +y
 })">İçinde En Çok X Sesli Harf Geçen</button>
+
+                <button class="btn orange" onclick="const z=prompt('Hangi harfle başlasın','A'); showScene(null, 
+              function(item){ 
+return  trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('tr')
+})">Şu harfle başlayanlar</button>
             
             </div>
     </div>
