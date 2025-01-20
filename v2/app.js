@@ -97,7 +97,7 @@ function getConfigValues() {
 function saveSettings(){
   setConfigValues();
   
-  document.getElementById("stage-selection").style.display = "block";
+  document.getElementById("stage-selection").style.display = "";
   document.getElementById("settings").style.display = "none";
   document.getElementById("game").style.display = "none";
   document.getElementById("header").style.display="flex";
