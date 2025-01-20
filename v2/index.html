@@ -90,7 +90,7 @@
     <!-- Oyun Alanı -->
     <div id="game" class="fade-in" style="display: none;">
       <div class="game-header">
-        <div id="timer" class="timer">KALAN SÜRE: 15</div>
+        <div id="timer" class="timer">KALAN SÜRE:</div>
         <button class="btn" onclick="toggleHint()">?</button>
       </div>
       
@@ -106,7 +106,7 @@
       <div class="settings-grid">
         <div class="setting-item">
           <label for="countDownInput">Süre (saniye)</label>
-          <input type="number" id="countDownInput" class="input" min="5" max="60">
+          <input type="number" id="countDownInput" class="input" min="5" max="600">
         </div>
         <div class="setting-item">
           <label for="attemptInput">Deneme Hakkı</label>
@@ -116,15 +116,15 @@
           <label for="dictionaryCheckInput">Sözlük Kontrolü</label>
           <input type="checkbox" id="dictionaryCheckInput">
         </div>
-        <div class="setting-item">
+        <!--<div class="setting-item">
           <label for="onlyFavInput">Sadece Favoriler</label>
           <input type="checkbox" id="onlyFavInput">
-        </div>
+        </div>-->
       </div>
       <div class="settings-actions">
         <button class="btn" onclick="saveSettings()">Kaydet</button>
-        <button class="btn" onclick="location.href='words.html'">Kelime Listesi</button>
-        <button class="btn" onclick="location.href='favman.html'">Favori Yönetimi</button>
+        <!--<button class="btn" onclick="location.href='words.html'">Kelime Listesi</button>
+        <button class="btn" onclick="location.href='favman.html'">Favori Yönetimi</button>-->
       </div>
     </div>
   </main>
