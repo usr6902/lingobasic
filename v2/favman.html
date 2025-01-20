@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TURGO - Favori Yönetimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3J29D51CZE');
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <h1 onclick="location.href='index.html'">
+            <span style="color: var(--t-color)">T</span>
+            <span style="color: var(--u-color)">u</span>
+            <span style="color: var(--r-color)">r</span>
+            <span style="color: var(--g-color)">g</span>
+            <span style="color: var(--o-color)">o</span>
+        </h1>
+        <button class="btn t-bg" onclick="history.back()">Geri Dön</button>
+    </header>
+
+    <!-- Ana İçerik -->
+    <main class="container">
+        <!-- Harf Sayısı Seçim Ekranı -->
+        <div id="length-selection" class="grid fade-in">
+            <div class="card t-bg" onclick="startFavManager('4tdk')">
+                <div>
+                    <h3>4 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card u-bg" onclick="startFavManager('5tdk')">
+                <div>
+                    <h3>5 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card r-bg" onclick="startFavManager('6tdk')">
+                <div>
+                    <h3>6 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card g-bg" onclick="startFavManager('7tdk')">
+                <div>
+                    <h3>7 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favori Yönetim Ekranı -->
+        <div id="fav-management" class="fade-in" style="display: none;">
+            <!-- Mevcut favori yönetim içeriği -->
+            <div class="current-word-container">
+                <h2 id="current-word" class="current-word"></h2>
+                <div class="word-actions">
+                    <button id="favori-btn" class="btn u-bg">
+                        <span class="material-icons">favorite</span>
+                        <span>Favoriye Ekle</span>
+                    </button>
+                    <button id="kara-btn" class="btn r-bg">
+                        <span class="material-icons">block</span>
+                        <span>Kara Listeye Ekle</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn t-bg" onclick="showScreen('all-screen')">
+                    <span class="material-icons">list</span>
+                    <span>Tüm Liste</span>
+                </button>
+                <button class="btn u-bg" onclick="showScreen('favori-screen')">
+                    <span class="material-icons">favorite</span>
+                    <span>Favoriler</span>
+                </button>
+                <button class="btn r-bg" onclick="showScreen('kara-screen')">
+                    <span class="material-icons">block</span>
+                    <span>Kara Liste</span>
+                </button>
+            </div>
+
+            <div class="filter-special">
+                <button class="btn o-bg" onclick="const x=prompt('İçinde en az kaç farklı sesli harf olsun','3'); showScene(function(a, b) {  
+                    const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
+                    const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
+                    return bSesli - aSesli;
+                }, 
+                function(item){ 
+                    return sesliHarfSayisi(item.kelime, true) >= +x
+                })">
+                    <span class="material-icons">filter_alt</span>
+                    <span>En Az X Sesli Harf</span>
+                </button>
+
+                <button class="btn o-bg" onclick="const y=prompt('İçinde en çok kaç sesli harf olsun','1'); showScene(null, 
+                function(item){ 
+                    return sesliHarfSayisi(item.kelime) <= +y
+                })">
+                    <span class="material-icons">filter_alt</span>
+                    <span>En Çok X Sesli Harf</span>
+                </button>
+
+                <button class="btn o-bg" onclick="const z=prompt('Hangi harfle başlasın','A'); showScene(null, 
+                function(item){ 
+                    return trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('tr')
+                })">
+                    <span class="material-icons">sort_by_alpha</span>
+                    <span>Harfle Başlayanlar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Liste Ekranları -->
+        <div id="all-screen" class="list-screen fade-in" style="display: none;">
+            <h2>Tüm Kelimeler</h2>
+            <div id="all-list" class="word-list"></div>
+        </div>
+
+        <div id="favori-screen" class="list-screen fade-in" style="display: none;">
+            <h2>Favoriler</h2>
+            <div id="favori-list" class="word-list"></div>
+        </div>
+
+        <div id="kara-screen" class="list-screen fade-in" style="display: none;">
+            <h2>Kara Liste</h2>
+            <div id="kara-list" class="word-list"></div>
+        </div>
+    </main>
+
+    <script>
+        let storageKey = "";
+        const getKelimeler = () => JSON.parse(localStorage.getItem(storageKey)) || [];
+        const setKelimeler = (data) => localStorage.setItem(storageKey, JSON.stringify(data));
+
+        function startFavManager(source) {
+            storageKey = source;
+            document.getElementById('length-selection').style.display = 'none';
+            document.getElementById('fav-management').style.display = 'block';
+            loadSourceData().then(() => {
+                renderNextWord();
+                setupEventListeners();
+            }).catch(error => {
+                document.getElementById("current-word").textContent = "Veri yüklenemedi!";
+                console.error("Hata:", error);
+            });
+        }
+
+        // JSON dosyasını yükleme
+        const loadSourceData = async () => {
+            try {
+                if (!localStorage.getItem(storageKey)) {               
+                    const response = await fetch(`json/${storageKey}.json`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    setKelimeler(data);
+                }
+                return true;
+            } catch (error) {
+                console.error("Kaynak verileri yüklenemedi:", error);
+                throw error; // Hatayı yukarı ilet
+            }
+        };
+
+        function setupEventListeners() {
+            document.getElementById("favori-btn").onclick = () => {
+                const kelime = document.getElementById("current-word").textContent;
+                if (kelime) updateWord(kelime, 1);
+            };
+
+            document.getElementById("kara-btn").onclick = () => {
+                const kelime = document.getElementById("current-word").textContent;
+                if (kelime) updateWord(kelime, -1);
+            };
+        }
+
+        // Kelimeyi sıradaki kelimeye göre güncelle
+        const renderNextWord = () => {
+            const kelimeler = getKelimeler();
+            if (!kelimeler || kelimeler.length === 0) {
+                document.getElementById("current-word").textContent = "Kelime listesi bulunamadı!";
+                return;
+            }
+            
+            const next = kelimeler.find(k => !k.favori);
+            const wordElement = document.getElementById("current-word");
+            wordElement.textContent = next ? next.kelime.toLocaleUpperCase("tr") : "Tüm kelimeler işlendi!";
+        };
+
+        // Kelimeyi güncelle
+        const updateWord = (kelime, durum) => {
+            const kelimeler = getKelimeler();
+            const updated = kelimeler.map(k => k.kelime === kelime ? { ...k, favori: durum } : k);
+            setKelimeler(updated);
+            renderNextWord();
+        };
+
+        // Listeyi render et
+        const renderList = (listId, filterCondition, sortCondition) => {
+            let kelimeler = getKelimeler();
+            if(sortCondition)
+                kelimeler = kelimeler.sort(sortCondition);
+            const filtered = kelimeler.filter(filterCondition);
+            const listElement = document.getElementById(listId);
+            const targetScreen=listId.split("-")[0];
+            listElement.innerHTML = filtered.sort((a, b) => {
+    if (a.kelime < b.kelime) return -1;
+    if (a.kelime > b.kelime) return 1;
+    return 0;
+}).map(k => `
+                <tr>
+                    <td>${k.kelime}</td>
+                    <td>
+                        <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', 1); showScreen('${targetScreen}-screen')"><i class="material-icons">favorite</i></button>&nbsp;
+                        <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" onclick="updateWord('${k.kelime}', null); showScreen('${targetScreen}-screen')"><i class="material-icons">autorenew</i></button>&nbsp;
+                        <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', -1);  showScreen('${targetScreen}-screen')"><i class="material-icons">block</i></button>
+                    </td>
+                </tr>
+            `).join("");
+        };
+        
+        // Ekranları değiştir
+        const showScreen = (screenId) => {
+            document.getElementById("fav-management").classList.add("hidden");
+            document.getElementById("all-screen").classList.add("hidden");
+            document.getElementById("favori-screen").classList.add("hidden");
+            document.getElementById("kara-screen").classList.add("hidden");
+
+            document.getElementById(screenId).classList.remove("hidden");
+
+            if (screenId === "favori-screen") {
+                renderList("favori-list", k => k.favori === 1);
+            } else if (screenId === "kara-screen") {
+                renderList("kara-list", k => k.favori === -1);
+            } else if (screenId === "all-screen") {
+                renderList("all-list", k => true);
+            }
+        };
+
+        const sesliHarfSayisi=(kelime, isBenzersiz) => {
+              const sesliHarfler = "aeıioöuü";
+              const benzersizHarfler = new Set();
+              // Her harfi kontrol edip sesli harfler setine ekliyoruz
+              for (const harf of kelime) {
+                if (sesliHarfler.includes(trimCaret(harf.toLocaleLowerCase("tr")))) {
+                    if(isBenzersiz)
+                        benzersizHarfler.add(trimCaret(harf.toLocaleLowerCase("tr")));
+                    else
+                        benzersizHarfler.add(new Date());
+                }
+              }
+
+              return benzersizHarfler.size;
+            } 
+
+            function trimCaret(str) {
+  const map =
+  {
+    "Â": "A",
+    "â": "a",
+    "Ĉ": "C",
+    "ĉ": "c",
+    "Ê": "E",
+    "ê": "e",
+    "Ĝ": "G",
+    "ĝ": "g",
+    "Ĥ": "H",
+    "ĥ": "h",
+    "Î": "İ",
+    "î": "i",
+    "Ĵ": "J",
+    "ĵ": "j",
+    "Ô": "O",
+    "ô": "o",
+    "Ŝ": "S",
+    "ŝ": "s",
+    "Û": "U",
+    "û": "u",
+    "Ŷ": "Y",
+    "ŷ": "y",
+    "Ẑ": "Z",
+    "ẑ": "z"
+  }
+  for (const m in map) {
+    str = str.replace(new RegExp(m, 'g'), map[m]);
+  }
+  return str;
+}
+
+        const showScene=(sortRule, filterRule)=>{
+            document.getElementById("fav-management").classList.add("hidden");
+            document.getElementById("all-screen").classList.remove("hidden");
+            renderList("all-list", filterRule, sortRule);
+        }
+    </script>
+</body>
+</html>

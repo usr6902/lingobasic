@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TURGO - Kelime Oyunu</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3J29D51CZE');
+  </script>
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="header">
+    <h1>
+      <span style="color: var(--t-color)">T</span>
+      <span style="color: var(--u-color)">u</span>
+      <span style="color: var(--r-color)">r</span>
+      <span style="color: var(--g-color)">g</span>
+      <span style="color: var(--o-color)">o</span>
+    </h1>
+    <button class="btn" onclick="showSettingsModal()">
+      <span class="material-icons">settings</span>
+    </button>
+  </header>
+
+  <!-- Ana İçerik -->
+  <main class="container">
+    <!-- Seviye Seçimi -->
+    <div id="stage-selection" class="grid fade-in">
+      <div class="card t-bg" onclick="startGame('4tdkfu')">
+        <div>
+          <h3>4 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card u-bg" onclick="startGame('5tdkfu')">
+        <div>
+          <h3>5 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card r-bg" onclick="startGame('6tdkfu')">
+        <div>
+          <h3>6 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card g-bg" onclick="startGame('7tdkfu')">
+        <div>
+          <h3>7 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card t-bg" onclick="startGame('4tdk')">
+        <div>
+          <h3>4 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+      <div class="card u-bg" onclick="startGame('5tdk')">
+        <div>
+          <h3>5 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+      <div class="card r-bg" onclick="startGame('6tdk')">
+        <div>
+          <h3>6 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+      <div class="card g-bg" onclick="startGame('7tdk')">
+        <div>
+          <h3>7 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Oyun Alanı -->
+    <div id="game" class="fade-in" style="display: none;">
+      <div class="game-header">
+        <div id="timer" class="timer">KALAN SÜRE: 15</div>
+        <button class="btn" onclick="toggleHint()">?</button>
+      </div>
+      
+      <div class="game-container">
+        <div id="inputs" class="inputs-grid"></div>
+        <input type="text" id="user-input" class="input" maxlength="7" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Ayarlar -->
+    <div id="settings" class="settings-container fade-in" style="display: none;">
+      <h2>Ayarlar</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label for="countDownInput">Süre (saniye)</label>
+          <input type="number" id="countDownInput" class="input" min="5" max="60">
+        </div>
+        <div class="setting-item">
+          <label for="attemptInput">Deneme Hakkı</label>
+          <input type="number" id="attemptInput" class="input" min="1" max="10">
+        </div>
+        <div class="setting-item">
+          <label for="dictionaryCheckInput">Sözlük Kontrolü</label>
+          <input type="checkbox" id="dictionaryCheckInput">
+        </div>
+        <div class="setting-item">
+          <label for="onlyFavInput">Sadece Favoriler</label>
+          <input type="checkbox" id="onlyFavInput">
+        </div>
+      </div>
+      <div class="settings-actions">
+        <button class="btn" onclick="saveSettings()">Kaydet</button>
+        <button class="btn" onclick="location.href='words.html'">Kelime Listesi</button>
+        <button class="btn" onclick="location.href='favman.html'">Favori Yönetimi</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="success-modal" class="modal">
+    <div class="modal-content">
+      <div id="modal-message"></div>
+      <button id="new-game-button" class="btn">Yeni Oyun</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <small>&copy; 2024 TURGO - Tüm hakları saklıdır.</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
