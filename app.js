@@ -1,5 +1,16 @@
+function getConfigValues() {
+  const cfg = JSON.parse(localStorage.getItem("configValues") ?? null);
+  return {
+    attemptsLeft: cfg?.attemptsLeft ?? 5,
+    countDown: cfg?.countDown ?? 15,
+    onlyFav: cfg ? !!cfg.onlyFav : false,
+    checkDictionary: cfg ? !!cfg.checkDictionary : true,
+    startupUrl: cfg?.startupUrl ?? ""
+  }
+}
+
 //location.href = "/turgo";
-location.href = "/lingobasic/v2";
+location.href = getConfigValues().startupUrl ?? "/lingobasic/v2";
 String.prototype.replaceAt = function (index, replacement) {
   return this.substring(0, index) + replacement + this.substring(index + replacement.length);
 }
@@ -83,16 +94,6 @@ function showSettingsModal() {
   document.getElementById("settings").style.display = "block";
   document.getElementById("game").style.display = "none";
   document.getElementById("header").style.display="flex";
-}
-
-function getConfigValues() {
-  const cfg = JSON.parse(localStorage.getItem("configValues") ?? null);
-  return {
-    attemptsLeft: cfg?.attemptsLeft ?? 5,
-    countDown: cfg?.countDown ?? 15,
-    onlyFav: cfg ? !!cfg.onlyFav : false,
-    checkDictionary: cfg ? !!cfg.checkDictionary : true,
-  }
 }
 
 function saveSettings(){

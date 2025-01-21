@@ -102,7 +102,7 @@
 
     <!-- Ayarlar -->
     <div id="settings" class="settings-container fade-in" style="display: none;">
-      <h2>Ayarlar</h2>
+      <h2 onclick="showExperimentalFields()">Ayarlar</h2>
       <div class="settings-grid">
         <div class="setting-item">
           <label for="countDownInput">Süre (saniye)</label>
@@ -116,9 +116,13 @@
           <label for="dictionaryCheckInput">Sözlük Kontrolü</label>
           <input type="checkbox" id="dictionaryCheckInput">
         </div>
-        <div class="setting-item" style="display:none;">
+        <div class="setting-item hidden experimental">
           <label for="onlyFavInput">Sadece Favoriler</label>
           <input type="checkbox" id="onlyFavInput">
+        </div>
+        <div class="setting-item hidden experimental">
+          <label for="startupUrl">Başlangıç Url i</label>
+          <input type="text" id="startupUrl" class="input">
         </div>
       </div>
       <div class="settings-actions">
@@ -137,9 +141,14 @@
     </div>
   </div>
 
+  <!-- Notification -->
+  <div id="notification" class="notification hidden">
+    <span id="notification-message"></span>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
-    <small>&copy; 2024 TURGO - Tüm hakları saklıdır.</small>
+    <small>&copy; 2025 TURGO</small>
   </footer>
 
   <script src="app.js"></script>

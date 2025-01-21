@@ -60,7 +60,7 @@
         </div>
 
         <!-- Favori Yönetim Ekranı -->
-        <div id="fav-management" class="fade-in" style="display: none;">
+        <div id="fav-management" class="fade-in hidden">
             <!-- Mevcut favori yönetim içeriği -->
             <div class="current-word-container">
                 <h2 id="current-word" class="current-word"></h2>
@@ -92,29 +92,35 @@
             </div>
 
             <div class="filter-special">
-                <button class="btn o-bg" onclick="const x=prompt('İçinde en az kaç farklı sesli harf olsun','3'); showScene(function(a, b) {  
-                    const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
-                    const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
-                    return bSesli - aSesli;
-                }, 
-                function(item){ 
-                    return sesliHarfSayisi(item.kelime, true) >= +x
+                <button class="btn o-bg" onclick="showInputModal('En az kaç farklı sesli harf olsun?', '3', function(x) {
+                    showScene(function(a, b) {  
+                        const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
+                        const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
+                        return bSesli - aSesli;
+                    }, 
+                    function(item){ 
+                        return sesliHarfSayisi(item.kelime, true) >= +x
+                    })
                 })">
                     <span class="material-icons">filter_alt</span>
                     <span>En Az X Sesli Harf</span>
                 </button>
 
-                <button class="btn o-bg" onclick="const y=prompt('İçinde en çok kaç sesli harf olsun','1'); showScene(null, 
-                function(item){ 
-                    return sesliHarfSayisi(item.kelime) <= +y
+                <button class="btn o-bg" onclick="showInputModal('En çok kaç sesli harf olsun?', '1', function(y) {
+                    showScene(null, 
+                    function(item){ 
+                        return sesliHarfSayisi(item.kelime) <= +y
+                    })
                 })">
                     <span class="material-icons">filter_alt</span>
                     <span>En Çok X Sesli Harf</span>
                 </button>
 
-                <button class="btn o-bg" onclick="const z=prompt('Hangi harfle başlasın','A'); showScene(null, 
-                function(item){ 
-                    return trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('tr')
+                <button class="btn o-bg" onclick="showInputModal('Hangi harfle başlasın?', 'A', function(z) {
+                    showScene(null, 
+                    function(item){ 
+                        return trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('tr')
+                    })
                 })">
                     <span class="material-icons">sort_by_alpha</span>
                     <span>Harfle Başlayanlar</span>
@@ -123,21 +129,47 @@
         </div>
 
         <!-- Liste Ekranları -->
-        <div id="all-screen" class="list-screen fade-in" style="display: none;">
+        <div id="all-screen" class="list-screen fade-in hidden">
             <h2>Tüm Kelimeler</h2>
             <div id="all-list" class="word-list"></div>
         </div>
 
-        <div id="favori-screen" class="list-screen fade-in" style="display: none;">
+        <div id="favori-screen" class="list-screen fade-in hidden">
             <h2>Favoriler</h2>
             <div id="favori-list" class="word-list"></div>
         </div>
 
-        <div id="kara-screen" class="list-screen fade-in" style="display: none;">
+        <div id="kara-screen" class="list-screen fade-in hidden">
             <h2>Kara Liste</h2>
             <div id="kara-list" class="word-list"></div>
         </div>
     </main>
+
+    <!-- Mevcut modal yapısının yanına yeni modalları ekleyelim -->
+    <div id="input-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="input-modal-title"></h3>
+            <input type="text" id="input-modal-value" class="modal-input">
+            <div class="modal-footer">
+                <button class="btn t-bg" onclick="closeInputModal()">İptal</button>
+                <button class="btn u-bg" onclick="confirmInputModal()">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="alert-modal-message"></h3>
+            <div class="modal-footer">
+                <button class="btn u-bg" onclick="closeAlertModal()">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">
+        <span id="notification-message"></span>
+    </div>
 
     <script>
         let storageKey = "";
@@ -147,7 +179,7 @@
         function startFavManager(source) {
             storageKey = source;
             document.getElementById('length-selection').style.display = 'none';
-            document.getElementById('fav-management').style.display = 'block';
+            document.getElementById('fav-management').classList.remove('hidden');
             loadSourceData().then(() => {
                 renderNextWord();
                 setupEventListeners();
@@ -215,21 +247,38 @@
                 kelimeler = kelimeler.sort(sortCondition);
             const filtered = kelimeler.filter(filterCondition);
             const listElement = document.getElementById(listId);
-            const targetScreen=listId.split("-")[0];
-            listElement.innerHTML = filtered.sort((a, b) => {
-    if (a.kelime < b.kelime) return -1;
-    if (a.kelime > b.kelime) return 1;
-    return 0;
-}).map(k => `
-                <tr>
-                    <td>${k.kelime}</td>
-                    <td>
-                        <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', 1); showScreen('${targetScreen}-screen')"><i class="material-icons">favorite</i></button>&nbsp;
-                        <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" onclick="updateWord('${k.kelime}', null); showScreen('${targetScreen}-screen')"><i class="material-icons">autorenew</i></button>&nbsp;
-                        <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', -1);  showScreen('${targetScreen}-screen')"><i class="material-icons">block</i></button>
-                    </td>
-                </tr>
-            `).join("");
+            const targetScreen = listId.split("-")[0];
+            
+            // Tablo yapısı oluştur
+            listElement.innerHTML = `
+                <table class="word-table">
+                    <tbody>
+                        ${filtered.sort((a, b) => {
+                            if (a.kelime < b.kelime) return -1;
+                            if (a.kelime > b.kelime) return 1;
+                            return 0;
+                        }).map(k => `
+                            <tr>
+                                <td>${k.kelime}</td>
+                                <td>
+                                    <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" 
+                                        onclick="updateWord('${k.kelime}', 1); showScreen('${targetScreen}-screen')">
+                                        <i class="material-icons">favorite</i>
+                                    </button>&nbsp;
+                                    <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" 
+                                        onclick="updateWord('${k.kelime}', null); showScreen('${targetScreen}-screen')">
+                                        <i class="material-icons">autorenew</i>
+                                    </button>&nbsp;
+                                    <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" 
+                                        onclick="updateWord('${k.kelime}', -1); showScreen('${targetScreen}-screen')">
+                                        <i class="material-icons">block</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
         };
         
         // Ekranları değiştir
@@ -305,6 +354,88 @@
             document.getElementById("all-screen").classList.remove("hidden");
             renderList("all-list", filterRule, sortRule);
         }
+
+        // Modal yönetimi için gerekli değişkenler
+        let currentModalCallback = null;
+
+        // Input modal fonksiyonları
+        function showInputModal(title, defaultValue, callback) {
+            const modal = document.getElementById('input-modal');
+            document.getElementById('input-modal-title').textContent = title;
+            document.getElementById('input-modal-value').value = defaultValue;
+            currentModalCallback = callback;
+            modal.classList.remove('hidden');
+        }
+
+        function closeInputModal() {
+            document.getElementById('input-modal').classList.add('hidden');
+            currentModalCallback = null;
+        }
+
+        function confirmInputModal() {
+            const value = document.getElementById('input-modal-value').value;
+            if (currentModalCallback) {
+                currentModalCallback(value);
+            }
+            closeInputModal();
+        }
+
+        // Alert modal fonksiyonları
+        function showAlertModal(message) {
+            const modal = document.getElementById('alert-modal');
+            document.getElementById('alert-modal-message').textContent = message;
+            modal.classList.remove('hidden');
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alert-modal').classList.add('hidden');
+        }
     </script>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #333;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            width: 90%;
+            color: white;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 1rem 0;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            background: #444;
+            color: white;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </body>
 </html>

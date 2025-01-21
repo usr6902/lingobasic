@@ -188,7 +188,7 @@ body {
 
 @media (max-width: 480px) {
     .grid {
-      /*  grid-template-columns: 1fr;*/
+        /*  grid-template-columns: 1fr;*/
     }
     
     .container {
@@ -611,4 +611,78 @@ body {
 .bg-msg-success{
     background-color: var(--u-color);
 
+}
+
+.word-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.word-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.word-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Buton stilleri */
+.btn-small {
+    padding: 0.25rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-small.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-small i {
+    font-size: 18px;
+}
+
+.green { background-color: var(--u-color); }
+.orange { background-color: var(--o-color); }
+.red { background-color: var(--r-color); }
+.hidden{display: none;}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    z-index: 1000;
+    animation: slideUp 0.3s ease-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.notification.success {
+    background: var(--u-color);
+}
+
+.notification.error {
+    background: var(--r-color);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }

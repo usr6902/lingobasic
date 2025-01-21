@@ -77,11 +77,21 @@ function showSettingsModal() {
   document.getElementById("attemptInput").value = cfg.attemptsLeft;
   document.getElementById("dictionaryCheckInput").checked = cfg.checkDictionary;
   document.getElementById("onlyFavInput").checked = cfg.onlyFav;
+  document.getElementById("startupUrl").value = cfg.startupUrl || "";
 
   document.getElementById("stage-selection").style.display = "none";
   document.getElementById("settings").style.display = "block";
   document.getElementById("game").style.display = "none";
   document.getElementById("header").style.display="flex";
+}
+
+let exp=0;
+function showExperimentalFields()
+{
+  if(++exp>=10)
+  {
+    document.querySelectorAll(".experimental").forEach(x=>x.classList.remove("hidden"))
+  }
 }
 
 function getConfigValues() {
@@ -91,6 +101,7 @@ function getConfigValues() {
     countDown: cfg?.countDown ?? 15,
     onlyFav: cfg ? !!cfg.onlyFav : false,
     checkDictionary: cfg ? !!cfg.checkDictionary : true,
+    startupUrl: cfg?.startupUrl ?? ""
   }
 }
 
@@ -106,11 +117,12 @@ function setConfigValues() {
     countDown: document.getElementById("countDownInput").value,
     attemptsLeft: document.getElementById("attemptInput").value,
     checkDictionary: document.getElementById("dictionaryCheckInput").checked,
-    onlyFav: document.getElementById("onlyFavInput").checked
+    onlyFav: document.getElementById("onlyFavInput").checked,
+    startupUrl: document.getElementById("startupUrl").value
   }
   configuration = cfg;
   localStorage.setItem("configValues", JSON.stringify(cfg));
-  alert("Güncelleme yapıldı.");
+  showNotification("Güncelleme yapıldı", "success", 500);
 }
 
 
@@ -327,11 +339,24 @@ async function getWordDescription() {
   }
 }
 
+function showNotification(message, type = 'success', duration=3000) {
+    const notification = document.getElementById('notification');
+    const messageElement = document.getElementById('notification-message');
+    
+    notification.className = 'notification ' + type;
+    messageElement.textContent = message;
+    notification.classList.remove('hidden');
+
+    setTimeout(() => {
+        notification.classList.add('hidden');
+    }, duration);
+}
+
 function submitGuess() {
     let guess = userInput.value.trim().toLocaleLowerCase("tr-TR");
     userInput.value = "";
     if (guess.length !== wordLength) {
-        alert("Lütfen tüm harfleri doldurun!");
+        showNotification("Lütfen tüm harfleri doldurun!", "error", 800);
         return;
     }
 
