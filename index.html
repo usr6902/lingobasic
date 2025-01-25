@@ -2,119 +2,156 @@
 <html lang="tr">
 
 <head>
-  
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3J29D51CZE');
-</script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kelime Tahmin Oyunu</title>
-  <link rel="stylesheet" href="app.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TURGO - Kelime Oyunu</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3J29D51CZE');
+  </script>
 </head>
 
 <body>
-  <div id="header" style="
-    padding: 0 2%;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: space-between;
-">
+  <!-- Header -->
+  <header id="header">
+    <h1>
+      <span style="color: var(--t-color)">T</span>
+      <span style="color: var(--u-color)">u</span>
+      <span style="color: var(--r-color)">r</span>
+      <span style="color: var(--g-color)">g</span>
+      <span style="color: var(--o-color)">o</span>
+    </h1>
+    <button class="btn" onclick="showSettingsModal()">
+      <span class="material-icons">settings</span>
+    </button>
+  </header>
 
-    <h1 onclick="location.href='index.html'">Turgo</h1>
-    <h1 onclick="showSettingsModal()">⚙</h1>
-
-</div>
-  <div id="stage-selection">
-    <h2>SIK KULLANILAN KELİMELER</h2>
-    <div class="button-container">
-      <button onclick="startGame('4tdkfu')" class="bolum">4 Harfli</button>
-      <button onclick="startGame('5tdkfu')" class="bolum">5 Harfli</button>
-      <button onclick="startGame('6tdkfu')" class="bolum">6 Harfli</button>
-      <button onclick="startGame('7tdkfu')" class="bolum">7 Harfli</button>
-    </div>
-
-    <h2>TDK FULL SERİSİ</h2>
-    <div class="button-container">
-      <button onclick="startGame('4tdk')" class="bolum">4 Harfli</button>
-      <button onclick="startGame('5tdk')" class="bolum">5 Harfli</button>
-      <button onclick="startGame('6tdk')" class="bolum">6 Harfli</button>
-      <button onclick="startGame('7tdk')" class="bolum">7 Harfli</button>
-    </div>
-  </div>
-
-  <div id="settings" style="display: none;">
-    <div class="row">
-      <label>Tahmin Süresi (sn)</label>
-      <input type="number" id="countDownInput"/>
-    </div>    
-    <div class="row">
-      <label>Hak Sayısı</label>
-      <input type="number" id="attemptInput"/>
-    </div>
-    <div class="row">
-      <label>Sözlük Kontrolü</label>
-      <input type="checkbox" id="dictionaryCheckInput"/>
-    </div>
-    <div class="row">
-      <label>Sadece Favorilerden Getir</label>
-      <input type="checkbox" id="onlyFavInput"/>
-    </div>
-    <div class="row">     
-      <button id="save-setting" onclick="saveSettings()">Kaydet</button>
-    </div>
-     <div class="row">     
-      <h2>Favori / Kara Liste Yönetimi</h2>
-    </div>   
-    <div class="row">     
-      <h6>SIK KULLANILAN KELİMELER</h6>
-    </div>
-     <div class="row">     
-      <a class="btn button" href="favman.html?source=4tdkfu.json">4 HARF</a>
-      <a class="btn button" href="favman.html?source=5tdkfu.json">5 HARF</a>
-      <a class="btn button" href="favman.html?source=6tdkfu.json">6 HARF</a>
-      <a class="btn button" href="favman.html?source=7tdkfu.json">7 HARF</a>
-    </div>
-      <div class="row">     
-      <h6>TDK FULL KELİMELER</h6>
-    </div>
-     <div class="row">     
-      <a class="btn button" href="favman.html?source=4tdk.json">4 HARF</a>
-      <a class="btn button" href="favman.html?source=5tdk.json">5 HARF</a>
-      <a class="btn button" href="favman.html?source=6tdk.json">6 HARF</a>
-      <a class="btn button" href="favman.html?source=7tdk.json">7 HARF</a>
-    </div>
-
-    <div class="row">  <a href="words.html">Kelime Ezberle</a></div>
-  </div>
-
-  <div id="game" style="display: none;">
-    <h1 id="timer"></h1>
-    <div class="input-container">
-      <div class="input-row">
-        <button class="btn btn-hint" onclick="toggleHint()">?</button>
-        <input id="user-input" type="text" maxlength="7" class="letter-input-org"><button class="btn btn-send"
-          onclick="submitGuess()">»</button>
-
+  <!-- Ana İçerik -->
+  <main class="container">
+    <!-- Seviye Seçimi -->
+    <div id="stage-selection" class="grid fade-in">
+      <div class="card t-bg" onclick="startGame('4tdkfu')">
+        <div>
+          <h3>4 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card u-bg" onclick="startGame('5tdkfu')">
+        <div>
+          <h3>5 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card r-bg" onclick="startGame('6tdkfu')">
+        <div>
+          <h3>6 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card g-bg" onclick="startGame('7tdkfu')">
+        <div>
+          <h3>7 Harfli</h3>
+          <small>Klasik Mod</small>
+        </div>
+      </div>
+      <div class="card t-bg" onclick="startGame('4tdk')">
+        <div>
+          <h3>4 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+      <div class="card u-bg" onclick="startGame('5tdk')">
+        <div>
+          <h3>5 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+      <div class="card r-bg" onclick="startGame('6tdk')">
+        <div>
+          <h3>6 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
+      </div>
+      <div class="card g-bg" onclick="startGame('7tdk')">
+        <div>
+          <h3>7 Harfli</h3>
+          <small>TDK Modu</small>
+        </div>
       </div>
     </div>
-    <div id="inputs"></div>
-  </div>
 
+    <!-- Oyun Alanı -->
+    <div id="game" class="fade-in" style="display: none;">
+      <div class="game-header">
+        <div id="timer" class="timer">KALAN SÜRE:</div>
+        <button class="btn" onclick="toggleHint()">?</button>
+      </div>
+      
+      <div class="game-container">
+        <div id="inputs" class="inputs-grid"></div>
+        <input type="text" id="user-input" class="input" maxlength="7" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Ayarlar -->
+    <div id="settings" class="settings-container fade-in" style="display: none;">
+      <h2 onclick="showExperimentalFields()">Ayarlar</h2>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label for="countDownInput">Süre (saniye)</label>
+          <input type="number" id="countDownInput" class="input" min="5" max="600">
+        </div>
+        <div class="setting-item">
+          <label for="attemptInput">Deneme Hakkı</label>
+          <input type="number" id="attemptInput" class="input" min="1" max="10">
+        </div>
+        <div class="setting-item">
+          <label for="dictionaryCheckInput">Sözlük Kontrolü</label>
+          <input type="checkbox" id="dictionaryCheckInput">
+        </div>
+        <div class="setting-item hidden experimental">
+          <label for="onlyFavInput">Sadece Favoriler</label>
+          <input type="checkbox" id="onlyFavInput">
+        </div>
+        <div class="setting-item hidden experimental">
+          <label for="startupUrl">Başlangıç Url i</label>
+          <input type="text" id="startupUrl" class="input">
+        </div>
+      </div>
+      <div class="settings-actions">
+        <button class="btn" onclick="saveSettings()">Kaydet</button>
+        <button class="btn" onclick="location.href='words.html'">Kelime Listesi</button>
+        <button class="btn" onclick="location.href='favman.html'">Favori Yönetimi</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
   <div id="success-modal" class="modal">
     <div class="modal-content">
       <div id="modal-message"></div>
-      <button id="new-game-button">Yeni Oyun</button>
+      <button id="new-game-button" class="btn">Yeni Oyun</button>
     </div>
   </div>
 
+  <!-- Notification -->
+  <div id="notification" class="notification hidden">
+    <span id="notification-message"></span>
+  </div>
 
-  <script src="app.js?x=3"></script>
+  <!-- Footer -->
+  <footer class="footer">
+    <small>&copy; 2025 TURGO</small>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 
 </html>

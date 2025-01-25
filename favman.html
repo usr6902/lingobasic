@@ -1,153 +1,235 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3J29D51CZE');
-</script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelimeler Uygulaması</title>
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
-    <style>
-        body {
-            padding: 20px;
-        }
-        .kelime-box {
-            margin: 20px 0;
-        }
-        .hidden {
-            display: none;
-        }
-        .scenes>button {
-  margin-top: 5px;
-  width: 100%;
-}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TURGO - Favori Yönetimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3J29D51CZE');
+    </script>
 </head>
 <body>
-<button class="btn grey" onclick="history.back();">Ayarlara Dön</button>
+    <!-- Header -->
+    <header id="header">
+        <h1 onclick="location.href='index.html'">
+            <span style="color: var(--t-color)">T</span>
+            <span style="color: var(--u-color)">u</span>
+            <span style="color: var(--r-color)">r</span>
+            <span style="color: var(--g-color)">g</span>
+            <span style="color: var(--o-color)">o</span>
+        </h1>
+        <button class="btn t-bg" onclick="history.back()">Geri Dön</button>
+    </header>
 
-    <div id="main-screen">
-        <div class="kelime-box center-align">
-            <h1 id="current-word"></h1>
-            <button id="favori-btn" class="btn green">Favoriye Ekle</button>
-            <button id="kara-btn" class="btn red">Kara Listeye Ekle</button>
+    <!-- Ana İçerik -->
+    <main class="container">
+        <!-- Harf Sayısı Seçim Ekranı -->
+        <div id="length-selection" class="grid fade-in">
+            <div class="card t-bg" onclick="startFavManager('4tdk')">
+                <div>
+                    <h3>4 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
             </div>
-            <div class="scenes">
-                <button class="btn orange" onclick="showScreen('all-screen')">Tüm Listem</button>
-                <button class="btn green" onclick="showScreen('favori-screen')">Favorilerim</button>
-                <button class="btn red" onclick="showScreen('kara-screen')">Kara Listem</button>
-                <button class="btn orange" onclick="const x=prompt('İçinde en az kaç farklı sesli harf olsun','3'); showScene(function(a, b) {  
-                                  const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
-                                  const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
-                                
-                                  // Çoktan aza doğru sıralama için b - a
-                                  return bSesli - aSesli;
-                                            }, 
-                                            function(item){ 
-                      return sesliHarfSayisi(item.kelime, true) >= +x
-                    })">İçinde En Az X Farklı Sesli Harf Geçen</button>
-
-<button class="btn orange" onclick="const y=prompt('İçinde en çok kaç sesli harf olsun','1'); showScene(null, 
-              function(item){ 
-return sesliHarfSayisi(item.kelime) <= +y
-})">İçinde En Çok X Sesli Harf Geçen</button>
-
-                <button class="btn orange" onclick="const z=prompt('Hangi harfle başlasın','A'); showScene(null, 
-              function(item){ 
-return  trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('tr')
-})">Şu harfle başlayanlar</button>
-            
+            <div class="card u-bg" onclick="startFavManager('5tdk')">
+                <div>
+                    <h3>5 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
             </div>
+            <div class="card r-bg" onclick="startFavManager('6tdk')">
+                <div>
+                    <h3>6 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card g-bg" onclick="startFavManager('7tdk')">
+                <div>
+                    <h3>7 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favori Yönetim Ekranı -->
+        <div id="fav-management" class="fade-in hidden">
+            <!-- Mevcut favori yönetim içeriği -->
+            <div class="current-word-container">
+                <h2 id="current-word" class="current-word"></h2>
+                <div class="word-actions">
+                    <button id="favori-btn" class="btn u-bg">
+                        <span class="material-icons">favorite</span>
+                        <span>Favoriye Ekle</span>
+                    </button>
+                    <button id="kara-btn" class="btn r-bg">
+                        <span class="material-icons">block</span>
+                        <span>Kara Listeye Ekle</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn t-bg" onclick="showScreen('all-screen')">
+                    <span class="material-icons">list</span>
+                    <span>Tüm Liste</span>
+                </button>
+                <button class="btn u-bg" onclick="showScreen('favori-screen')">
+                    <span class="material-icons">favorite</span>
+                    <span>Favoriler</span>
+                </button>
+                <button class="btn r-bg" onclick="showScreen('kara-screen')">
+                    <span class="material-icons">block</span>
+                    <span>Kara Liste</span>
+                </button>
+            </div>
+
+            <div class="filter-special">
+                <button class="btn o-bg" onclick="showInputModal('En az kaç farklı sesli harf olsun?', '3', function(x) {
+                    showScene(function(a, b) {  
+                        const aSesli = sesliHarfSayisi(a.kelime.toLocaleLowerCase('tr'),true);
+                        const bSesli = sesliHarfSayisi(b.kelime.toLocaleLowerCase('tr'), true);
+                        return bSesli - aSesli;
+                    }, 
+                    function(item){ 
+                        return sesliHarfSayisi(item.kelime, true) >= +x
+                    })
+                })">
+                    <span class="material-icons">filter_alt</span>
+                    <span>En Az X Sesli Harf</span>
+                </button>
+
+                <button class="btn o-bg" onclick="showInputModal('En çok kaç sesli harf olsun?', '1', function(y) {
+                    showScene(null, 
+                    function(item){ 
+                        return sesliHarfSayisi(item.kelime) <= +y
+                    })
+                })">
+                    <span class="material-icons">filter_alt</span>
+                    <span>En Çok X Sesli Harf</span>
+                </button>
+
+                <button class="btn o-bg" onclick="showInputModal('Hangi harfle başlasın?', 'A', function(z) {
+                    showScene(null, 
+                    function(item){ 
+                        return trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('tr')
+                    })
+                })">
+                    <span class="material-icons">sort_by_alpha</span>
+                    <span>Harfle Başlayanlar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Liste Ekranları -->
+        <div id="all-screen" class="list-screen fade-in hidden">
+            <h2>Tüm Kelimeler</h2>
+            <div id="all-list" class="word-list"></div>
+        </div>
+
+        <div id="favori-screen" class="list-screen fade-in hidden">
+            <h2>Favoriler</h2>
+            <div id="favori-list" class="word-list"></div>
+        </div>
+
+        <div id="kara-screen" class="list-screen fade-in hidden">
+            <h2>Kara Liste</h2>
+            <div id="kara-list" class="word-list"></div>
+        </div>
+    </main>
+
+    <!-- Mevcut modal yapısının yanına yeni modalları ekleyelim -->
+    <div id="input-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="input-modal-title"></h3>
+            <input type="text" id="input-modal-value" class="modal-input">
+            <div class="modal-footer">
+                <button class="btn t-bg" onclick="closeInputModal()">İptal</button>
+                <button class="btn u-bg" onclick="confirmInputModal()">Tamam</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Favori Ekranı -->
-    <div id="favori-screen" class="hidden">
-        <h4>Favorilerim</h4>
-        <table class="striped">
-            <thead>
-                <tr>
-                    <th>Kelime</th>
-                    <th>Aksiyon</th>
-                </tr>
-            </thead>
-            <tbody id="favori-list"></tbody>
-        </table>
-        <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
+    <div id="alert-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="alert-modal-message"></h3>
+            <div class="modal-footer">
+                <button class="btn u-bg" onclick="closeAlertModal()">Tamam</button>
+            </div>
+        </div>
     </div>
 
-    
-    <!-- Tüm Kelimeler Ekranı -->
-    <div id="all-screen" class="hidden">
-        <h4>Tüm Kelimelerim</h4>
-        <table class="striped">
-            <thead>
-                <tr>
-                    <th>Kelime</th>
-                    <th>Aksiyon</th>
-                </tr>
-            </thead>
-            <tbody id="all-list"></tbody>
-        </table>
-        <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
-    </div>
-
-    <!-- Kara Liste Ekranı -->
-    <div id="kara-screen" class="hidden">
-        <h4>Kara Listem</h4>
-        <table class="striped">
-            <thead>
-                <tr>
-                    <th>Kelime</th>
-                    <th>Aksiyon</th>
-                </tr>
-            </thead>
-            <tbody id="kara-list"></tbody>
-        </table>
-        <button class="btn grey" onclick="showScreen('main-screen')">Geri Dön</button>
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">
+        <span id="notification-message"></span>
     </div>
 
     <script>
-        // LocalStorage kontrolü ve veriyi alma
         let storageKey = "";
         const getKelimeler = () => JSON.parse(localStorage.getItem(storageKey)) || [];
         const setKelimeler = (data) => localStorage.setItem(storageKey, JSON.stringify(data));
 
-        // URL'deki parametreleri alma
-        const getUrlParameter = (name) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        };
+        function startFavManager(source) {
+            storageKey = source;
+            document.getElementById('length-selection').style.display = 'none';
+            document.getElementById('fav-management').classList.remove('hidden');
+            loadSourceData().then(() => {
+                renderNextWord();
+                setupEventListeners();
+            }).catch(error => {
+                document.getElementById("current-word").textContent = "Veri yüklenemedi!";
+                console.error("Hata:", error);
+            });
+        }
 
         // JSON dosyasını yükleme
         const loadSourceData = async () => {
-            var flag = localStorage.getItem(storageKey)
-            if (!flag) {               
-                try {
-                    const response = await fetch("json/"+storageKey);
+            try {
+                if (!localStorage.getItem(storageKey)) {               
+                    const response = await fetch(`json/${storageKey}.json`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     const data = await response.json();
                     setKelimeler(data);
-                } catch (error) {
-                    console.error("Kaynak verileri yüklenemedi:", error);
                 }
+                return true;
+            } catch (error) {
+                console.error("Kaynak verileri yüklenemedi:", error);
+                throw error; // Hatayı yukarı ilet
             }
         };
+
+        function setupEventListeners() {
+            document.getElementById("favori-btn").onclick = () => {
+                const kelime = document.getElementById("current-word").textContent;
+                if (kelime) updateWord(kelime, 1);
+            };
+
+            document.getElementById("kara-btn").onclick = () => {
+                const kelime = document.getElementById("current-word").textContent;
+                if (kelime) updateWord(kelime, -1);
+            };
+        }
 
         // Kelimeyi sıradaki kelimeye göre güncelle
         const renderNextWord = () => {
             const kelimeler = getKelimeler();
+            if (!kelimeler || kelimeler.length === 0) {
+                document.getElementById("current-word").textContent = "Kelime listesi bulunamadı!";
+                return;
+            }
+            
             const next = kelimeler.find(k => !k.favori);
             const wordElement = document.getElementById("current-word");
-            wordElement.textContent = next ? next.kelime.toLocaleUpperCase("tr"): "Tüm kelimeler işlendi!";
+            wordElement.textContent = next ? next.kelime.toLocaleUpperCase("tr") : "Tüm kelimeler işlendi!";
         };
 
         // Kelimeyi güncelle
@@ -165,29 +247,46 @@ return  trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('
                 kelimeler = kelimeler.sort(sortCondition);
             const filtered = kelimeler.filter(filterCondition);
             const listElement = document.getElementById(listId);
-            const targetScreen=listId.split("-")[0];
-            listElement.innerHTML = filtered.sort((a, b) => {
-    if (a.kelime < b.kelime) return -1;
-    if (a.kelime > b.kelime) return 1;
-    return 0;
-}).map(k => `
-                <tr>
-                    <td>${k.kelime}</td>
-                    <td>
-                        <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', 1); showScreen('${targetScreen}-screen')"><i class="material-icons">favorite</i></button>&nbsp;
-                        <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" onclick="updateWord('${k.kelime}', null); showScreen('${targetScreen}-screen')"><i class="material-icons">autorenew</i></button>&nbsp;
-                        <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" onclick="updateWord('${k.kelime}', -1);  showScreen('${targetScreen}-screen')"><i class="material-icons">block</i></button>
-                    </td>
-                </tr>
-            `).join("");
+            const targetScreen = listId.split("-")[0];
+            
+            // Tablo yapısı oluştur
+            listElement.innerHTML = `
+                <table class="word-table">
+                    <tbody>
+                        ${filtered.sort((a, b) => {
+                            if (a.kelime < b.kelime) return -1;
+                            if (a.kelime > b.kelime) return 1;
+                            return 0;
+                        }).map(k => `
+                            <tr>
+                                <td>${k.kelime}</td>
+                                <td>
+                                    <button class="btn-small green ${k.favori === 1 ? 'disabled':''}" 
+                                        onclick="updateWord('${k.kelime}', 1); showScreen('${targetScreen}-screen')">
+                                        <i class="material-icons">favorite</i>
+                                    </button>&nbsp;
+                                    <button class="btn-small orange ${k.favori === 1 || k.favori === -1 ? '':'disabled'}" 
+                                        onclick="updateWord('${k.kelime}', null); showScreen('${targetScreen}-screen')">
+                                        <i class="material-icons">autorenew</i>
+                                    </button>&nbsp;
+                                    <button class="btn-small red ${k.favori === -1 ? 'disabled':''}" 
+                                        onclick="updateWord('${k.kelime}', -1); showScreen('${targetScreen}-screen')">
+                                        <i class="material-icons">block</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
         };
         
         // Ekranları değiştir
         const showScreen = (screenId) => {
-            document.getElementById("main-screen").classList.add("hidden");
+            document.getElementById("fav-management").classList.add("hidden");
+            document.getElementById("all-screen").classList.add("hidden");
             document.getElementById("favori-screen").classList.add("hidden");
             document.getElementById("kara-screen").classList.add("hidden");
-            document.getElementById("all-screen").classList.add("hidden");
 
             document.getElementById(screenId).classList.remove("hidden");
 
@@ -251,35 +350,92 @@ return  trimCaret(item.kelime.toLocaleLowerCase('tr'))[0]==z.toLocaleLowerCase('
 }
 
         const showScene=(sortRule, filterRule)=>{
-            document.getElementById("main-screen").classList.add("hidden");
-            document.getElementById("favori-screen").classList.add("hidden");
-            document.getElementById("kara-screen").classList.add("hidden");
+            document.getElementById("fav-management").classList.add("hidden");
             document.getElementById("all-screen").classList.remove("hidden");
             renderList("all-list", filterRule, sortRule);
         }
 
-        document.getElementById("favori-btn").addEventListener("click", () => {
-            const kelime = document.getElementById("current-word").textContent;
-            if (kelime) updateWord(kelime, 1);
-        });
+        // Modal yönetimi için gerekli değişkenler
+        let currentModalCallback = null;
 
-        document.getElementById("kara-btn").addEventListener("click", () => {
-            const kelime = document.getElementById("current-word").textContent;
-            if (kelime) updateWord(kelime, -1);
-        });
+        // Input modal fonksiyonları
+        function showInputModal(title, defaultValue, callback) {
+            const modal = document.getElementById('input-modal');
+            document.getElementById('input-modal-title').textContent = title;
+            document.getElementById('input-modal-value').value = defaultValue;
+            currentModalCallback = callback;
+            modal.classList.remove('hidden');
+        }
 
-        // Sayfa yüklendiğinde
-        window.onload = async () => {
-            const source = getUrlParameter("source");
-          if(!source)
-          {
-            alert("source parametresi verilmeden işlem yapılamaz");
-            throw "source parametresi verilmeden işlem yapılamaz";
-          }
-           storageKey = source;
-            await loadSourceData();
-            renderNextWord();
-        };
+        function closeInputModal() {
+            document.getElementById('input-modal').classList.add('hidden');
+            currentModalCallback = null;
+        }
+
+        function confirmInputModal() {
+            const value = document.getElementById('input-modal-value').value;
+            if (currentModalCallback) {
+                currentModalCallback(value);
+            }
+            closeInputModal();
+        }
+
+        // Alert modal fonksiyonları
+        function showAlertModal(message) {
+            const modal = document.getElementById('alert-modal');
+            document.getElementById('alert-modal-message').textContent = message;
+            modal.classList.remove('hidden');
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alert-modal').classList.add('hidden');
+        }
     </script>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #333;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            width: 90%;
+            color: white;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 1rem 0;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            background: #444;
+            color: white;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </body>
 </html>

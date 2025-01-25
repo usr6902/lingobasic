@@ -1,115 +1,78 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-3J29D51CZE');
-</script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelime Uygulaması</title>
-    <!-- Materialize CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f5f5f5;
-        }
-
-        .card-container {
-            margin-top: 50px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .card {
-            width: 200px;
-            cursor: pointer;
-        }
-
-        .buttons-container {
-            margin: 20px 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .word-list {
-            margin: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .word-list div:nth-child(even) {
-            background-color: #f0f0f0;
-        }
-
-        .word-list div {
-            padding: 10px;
-            font-size: 18px;
-        }
-
-        .footer-buttons {
-            position: fixed;
-            bottom: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .footer-buttons button {
-            width: auto;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TURGO - Kelime Listesi</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3J29D51CZE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-3J29D51CZE');
+    </script>
 </head>
 <body>
-    <div id="main-container" class="card-container">
-        <div class="card blue lighten-2 white-text" onclick="showAlphabetButtons(4)">
-            <div class="card-content center-align">
-                <h5>4 Harfli</h5>
-            </div>
-        </div>
-        <div class="card green lighten-2 white-text" onclick="showAlphabetButtons(5)">
-            <div class="card-content center-align">
-                <h5>5 Harfli</h5>
-            </div>
-        </div>
-        <div class="card orange lighten-2 white-text" onclick="showAlphabetButtons(6)">
-            <div class="card-content center-align">
-                <h5>6 Harfli</h5>
-            </div>
-        </div>
-        <div class="card red lighten-2 white-text" onclick="showAlphabetButtons(7)">
-            <div class="card-content center-align">
-                <h5>7 Harfli</h5>
-            </div>
-        </div>
-    </div>
+    <!-- Header -->
+    <header id="header">
+        <h1 onclick="location.href='index.html'">
+            <span style="color: var(--t-color)">T</span>
+            <span style="color: var(--u-color)">u</span>
+            <span style="color: var(--r-color)">r</span>
+            <span style="color: var(--g-color)">g</span>
+            <span style="color: var(--o-color)">o</span>
+        </h1>
+    </header>
 
-    <div id="alphabet-container" class="buttons-container" style="display: none;"></div>
-    <div id="words-container" class="word-list" style="display: none;"></div>
+    <!-- Ana İçerik -->
+    <main class="container">
+        <!-- Harf Seçimi -->
+        <div id="main-container" class="grid fade-in">
+            <div class="card t-bg" onclick="showAlphabetButtons(4)">
+                <div>
+                    <h3>4 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card u-bg" onclick="showAlphabetButtons(5)">
+                <div>
+                    <h3>5 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card r-bg" onclick="showAlphabetButtons(6)">
+                <div>
+                    <h3>6 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+            <div class="card g-bg" onclick="showAlphabetButtons(7)">
+                <div>
+                    <h3>7 Harfli</h3>
+                    <small>Kelimeler</small>
+                </div>
+            </div>
+        </div>
 
-    <div class="footer-buttons">
-        <button class="btn red lighten-1" onclick="goBack()">Geri Dön</button>
-        <button class="btn blue lighten-1" onclick="goToHome()">Ana Ekrana Dön</button>
-    </div>
+        <!-- Alfabe Seçimi -->
+        <div id="alphabet-container" class="alphabet-grid fade-in" style="display: none;"></div>
 
-    <!-- Materialize JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <!-- Custom JS -->
+        <!-- Kelime Listesi -->
+        <div id="words-container" class="words-list fade-in" style="display: none;"></div>
+    </main>
+
+    <!-- Footer Butonları -->
+    <footer class="footer">
+        <div class="footer-buttons">
+            <button class="btn t-bg" onclick="goBack()">Geri Dön</button>
+            <button class="btn u-bg" onclick="goToHome()">Ana Sayfa</button>
+        </div>
+    </footer>
+
     <script>
         let currentLevel = 'main';
         let selectedLength;
@@ -117,40 +80,53 @@
         function showAlphabetButtons(length) {
             selectedLength = length;
             const alphabetContainer = document.getElementById('alphabet-container');
-            alphabetContainer.style.display = 'flex';
+            alphabetContainer.style.display = 'grid';
             alphabetContainer.innerHTML = '';
+            
             const turkishChars = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split('');
             turkishChars.forEach(char => {
                 const button = document.createElement('button');
-                button.className = 'btn-small blue lighten-2 white-text';
+                button.className = 'btn alphabet-btn t-bg';
                 button.textContent = char;
                 button.onclick = () => fetchWords(char);
                 alphabetContainer.appendChild(button);
             });
+            
             document.getElementById('main-container').style.display = 'none';
             currentLevel = 'alphabet';
         }
 
         async function fetchWords(char) {
-            const url = `json/${selectedLength}tdkfu.json`;
+            const wordsContainer = document.getElementById('words-container');
+            wordsContainer.innerHTML = '<div class="loading-container"><div class="loading"></div></div>';
+            wordsContainer.style.display = 'block';
+            
             try {
+                const url = `json/${selectedLength}tdkfu.json`;
                 const response = await fetch(url);
                 const words = await response.json();
-                const filteredWords = words.map(w=>w.kelime)
+                const filteredWords = words
+                    .map(w => w.kelime)
                     .filter(word => word.toLocaleLowerCase("tr-TR").startsWith(char.toLocaleLowerCase("tr-TR")))
                     .sort();
+                
                 displayWords(filteredWords);
             } catch (error) {
-                M.toast({ html: 'Kelime listesi alınırken bir hata oluştu.', classes: 'red' });
+                wordsContainer.innerHTML = '<div class="error-message">Kelime listesi alınırken bir hata oluştu.</div>';
             }
         }
 
         function displayWords(words) {
             const wordsContainer = document.getElementById('words-container');
+            if (words.length === 0) {
+                wordsContainer.innerHTML = '<div class="empty-message">Bu harfle başlayan kelime bulunamadı.</div>';
+                return;
+            }
+            
             wordsContainer.innerHTML = words
-                .map(word => `<div>${word}</div>`)
+                .map(word => `<div class="word-item">${word}</div>`)
                 .join('');
-            wordsContainer.style.display = 'block';
+            
             document.getElementById('alphabet-container').style.display = 'none';
             currentLevel = 'words';
         }
@@ -158,17 +134,18 @@
         function goBack() {
             if (currentLevel === 'alphabet') {
                 document.getElementById('alphabet-container').style.display = 'none';
-                document.getElementById('main-container').style.display = 'flex';
+                document.getElementById('main-container').style.display = 'grid';
+                document.getElementById('words-container').style.display = 'none';
                 currentLevel = 'main';
             } else if (currentLevel === 'words') {
                 document.getElementById('words-container').style.display = 'none';
-                document.getElementById('alphabet-container').style.display = 'flex';
+                document.getElementById('alphabet-container').style.display = 'grid';
                 currentLevel = 'alphabet';
             }
         }
 
         function goToHome() {
-            location.href="index.html";
+            location.href = "index.html";
         }
     </script>
 </body>
