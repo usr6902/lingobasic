@@ -235,7 +235,7 @@
         // Kelimeyi güncelle
         const updateWord = (kelime, durum) => {
             const kelimeler = getKelimeler();
-            const updated = kelimeler.map(k => k.kelime === kelime ? { ...k, favori: durum } : k);
+            const updated = kelimeler.map(k => trimCaret(k.kelime.toLocaleLowerCase("tr")) === trimCaret(kelime.toLocaleLowerCase("tr")) ? { ...k, favori: durum } : k);
             setKelimeler(updated);
             renderNextWord();
         };
