@@ -1,3 +1,17 @@
+function getConfigValues() {
+  const cfg = JSON.parse(localStorage.getItem("configValues") ?? null);
+  return {
+    attemptsLeft: cfg?.attemptsLeft ?? 5,
+    countDown: cfg?.countDown ?? 15,
+    onlyFav: cfg ? !!cfg.onlyFav : false,
+    checkDictionary: cfg ? !!cfg.checkDictionary : true,
+    startupUrl: cfg?.startupUrl ?? ""
+  }
+}
+
+if(getConfigValues().startupUrl)
+  location.href = getConfigValues().startupUrl;
+
 String.prototype.replaceAt = function (index, replacement) {
   return this.substring(0, index) + replacement + this.substring(index + replacement.length);
 }
@@ -91,17 +105,6 @@ function showExperimentalFields()
   if(++exp>=10)
   {
     document.querySelectorAll(".experimental").forEach(x=>x.classList.remove("hidden"))
-  }
-}
-
-function getConfigValues() {
-  const cfg = JSON.parse(localStorage.getItem("configValues") ?? null);
-  return {
-    attemptsLeft: cfg?.attemptsLeft ?? 5,
-    countDown: cfg?.countDown ?? 15,
-    onlyFav: cfg ? !!cfg.onlyFav : false,
-    checkDictionary: cfg ? !!cfg.checkDictionary : true,
-    startupUrl: cfg?.startupUrl ?? ""
   }
 }
 
