@@ -301,7 +301,7 @@ function showModal(message, isSuccess, body) {
   });  
   
   const homeButton = document.getElementById("goto-home-button");
-  newGameButton.addEventListener("click", function () {
+  homeButton.addEventListener("click", function () {
     localStorage.setItem("reloadGame","0");
     location.reload(); // Sayfayı yeniden yükle
   });
