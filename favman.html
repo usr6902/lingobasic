@@ -26,7 +26,7 @@
             <span style="color: var(--g-color)">g</span>
             <span style="color: var(--o-color)">o</span>
         </h1>
-        <button class="btn t-bg" onclick="history.back()">Geri Dön</button>
+        <button class="btn t-bg" onclick="goBack();">Geri Dön</button>
     </header>
 
     <!-- Ana İçerik -->
@@ -178,7 +178,7 @@
 
         function startFavManager(source) {
             storageKey = source;
-            document.getElementById('length-selection').style.display = 'none';
+            document.getElementById('length-selection').classList.add("hidden");
             document.getElementById('fav-management').classList.remove('hidden');
             loadSourceData().then(() => {
                 renderNextWord();
@@ -283,6 +283,7 @@
         
         // Ekranları değiştir
         const showScreen = (screenId) => {
+            document.getElementById("length-selection").classList.add("hidden");
             document.getElementById("fav-management").classList.add("hidden");
             document.getElementById("all-screen").classList.add("hidden");
             document.getElementById("favori-screen").classList.add("hidden");
@@ -349,8 +350,30 @@
   return str;
 }
 
-        const showScene=(sortRule, filterRule)=>{
+const goBack=()=>{
+    if(!document.getElementById("length-selection").classList.contains("hidden"))
+    {
+        history.back();
+        return;
+    }
+    let targetElem = document.getElementById("length-selection");
+    if(document.getElementById("fav-management").classList.contains("hidden"))
+    {
+        targetElem = document.getElementById("fav-management");
+    }   
+            document.getElementById("length-selection").classList.add("hidden");
             document.getElementById("fav-management").classList.add("hidden");
+            document.getElementById("all-screen").classList.add("hidden");
+            document.getElementById("favori-screen").classList.add("hidden");
+            document.getElementById("kara-screen").classList.add("hidden");
+            targetElem.classList.remove("hidden");
+}
+        const showScene=(sortRule, filterRule)=>{
+            document.getElementById("length-selection").classList.add("hidden");
+            document.getElementById("fav-management").classList.add("hidden");
+//          document.getElementById("all-screen").classList.add("hidden");
+            document.getElementById("favori-screen").classList.add("hidden");
+            document.getElementById("kara-screen").classList.add("hidden");
             document.getElementById("all-screen").classList.remove("hidden");
             renderList("all-list", filterRule, sortRule);
         }

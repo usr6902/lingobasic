@@ -91,7 +91,7 @@
     <div id="game" class="fade-in" style="display: none;">
       <div class="game-header">
         <div id="timer" class="timer">KALAN SÜRE:</div>
-        <button class="btn" onclick="toggleHint()">?</button>
+        <button class="btn hidden" onclick="toggleHint()">?</button>
       </div>
       
       <div class="game-container">
@@ -137,7 +137,10 @@
   <div id="success-modal" class="modal">
     <div class="modal-content">
       <div id="modal-message"></div>
-      <button id="new-game-button" class="btn">Yeni Oyun</button>
+      <div class="modal-buttons">        
+      <button id="new-game-button" class="btn">Devam Et</button>
+      <button id="goto-home-button" class="btn r-bg">Ana Ekrana Dön</button>
+      </div>
     </div>
   </div>
 

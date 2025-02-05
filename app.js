@@ -151,6 +151,8 @@ const loadSourceData = async (source) => {
         };
 
 async function startGame(key) {
+  localStorage.setItem("lastChoice", key);
+  localStorage.setItem("reloadGame", "0");
   configuration = getConfigValues();
   attemptsLeft = configuration.attemptsLeft;
   countDown = configuration.countDown;
@@ -294,6 +296,13 @@ function showModal(message, isSuccess, body) {
   // Yeni Oyun butonu işlevi
   const newGameButton = document.getElementById("new-game-button");
   newGameButton.addEventListener("click", function () {
+    localStorage.setItem("reloadGame","1");
+    location.reload(); // Sayfayı yeniden yükle
+  });  
+  
+  const homeButton = document.getElementById("goto-home-button");
+  newGameButton.addEventListener("click", function () {
+    localStorage.setItem("reloadGame","0");
     location.reload(); // Sayfayı yeniden yükle
   });
 }
@@ -449,4 +458,9 @@ function submitGuess() {
 
     countDown = configuration.countDown;
     focusNextInput();
+}
+
+if(localStorage.getItem("reloadGame")==="1")
+{
+    startGame(localStorage.getItem("lastChoice"));
 }
